@@ -1,1 +1,11 @@
 # ThaGA
+Aims: TRegGA often show different results on the target gene when different reference genomes are used. It become critical to select the "correct" reference for optimal result. Targeted Haplotype-Assisted Genome Assembly (ThaGA) aims to improve TRegGA by using a reference for the target gene that is built from denovo assembled supercontigs derived from closely-related haplotypes of the target gene. ThaGA takes a specific rice cultivar and the target gene of interest's coordinate on reference Japponica genome as inputs, apply the haplotype search algorithm to serach for the best haplotypes of the target gene in 3kRGP, retrieve and subject the haplotype reads to TRegGA for denovo assembly and RATT annotation, then returns with a supercontig sequence with annotation in Embl format. The ThaGA supercontig can be served to replace the reference for the assembly of the same target gene in the specified cultivar in TRegGA application. 
+
+Agenda of ThaGA development and application:
+1. prove of concept using a target gene (TBD) and:
+    a. TRegGA of target gene with rice indica 93-11 reads against reference japonica
+    b. TRegGA of target gene with rice indica 93-11 reads against reference using denovo assembled supercontigs from close haplotypes (manually selected) on the target gene.
+     c. Comparison of result a and result b to 93-11 reference: result b should be closer to ref 93-11 than result a due to the use of ThaGA.
+2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
+3. repeat of Aim1 with developed algorithm for ThaGA.
+4. Application of ThaGA on finding Xa7 gene.
