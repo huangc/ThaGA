@@ -1,4 +1,4 @@
-# Targeted Haplotype-Assisted Genome Assembly (ThaGA)
+# Targeted Haplotype-Assisted Genome Assembly
 Contributed by Chun-Yuan Huang, 3/1/2016
 
 ## Aims: 
