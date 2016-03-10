@@ -2,7 +2,7 @@
 Contributed by Chun-Yuan Huang, 3/10/2016
 
 ## Aims: 
-Reference guided assembly of target sequence using tools such as TRegGA (https://github.com/BrendelGroup/TRegGA) often show different results on the target gene assembly when different reference genomes are used. It become critical to select the "correct" reference for optimal assembly when the reference sequence is several references are available. This project Targeted Haplotype-Assisted Reference-Guided Genome Assembly (ThaRegGA) aims to improve reference guided genome assembly by building a reference from denovo assembled supercontigs derived from closely-related haplotype blocks of the target gene. Using the Rice 3,000 Genome Project (3kRGP) as our platform, ThaRegGA takes a specific rice cultivar and the target gene of interest's coordinate on reference Japponica genome as inputs, apply the haplotype search algorithm to serach for the close-related haplotype blocks of the target gene in 3kRGP, retrieve and subject the haplotype reads for denovo assembly and RATT annotation using TRegGA, then returns with a supercontig sequence with annotation in Embl format. The ThaRegGA supercontig can be served as the new reference sequence in order to gain reliable reference-guided assembly of the target gene. Combined with TRegGA, this workflow work to streamline and improve current targeted reference genome assembly by taking advantage of large-size genome projects such as 3kRGP.  
+Reference guided assembly of target sequence using tools such as TRegGA (https://github.com/BrendelGroup/TRegGA) often show different results on the target gene assembly when different reference genomes are used. It become critical to select the "correct" reference for optimal assembly when the sample sequence is distant from available references. This project Targeted Haplotype-Assisted Reference-Guided Genome Assembly (ThaRegGA) aims to improve reference guided genome assembly by building a reference from denovo assembled supercontigs derived from closely-related haplotype blocks of the target gene. Using the Rice 3,000 Genome Project (3kRGP) as our resource, ThaRegGA takes a specific rice cultivar and the target gene of interest's coordinate on reference Japponica genome as inputs, apply the haplotype search algorithm for its close-related cultivars of the target gene in 3kRGP, retrieve and subject the haplotype reads for denovo assembly and RATT annotation using TRegGA, then returns with a supercontig sequence with annotation in Embl format. The ThaRegGA supercontig can be served as the new reference sequence in order to gain reliable reference-guided assembly of the target gene. Combined with TRegGA, this workflow work to streamline and improve current targeted reference genome assembly by taking advantage of large-size genome projects such as 3kRGP.  
 
 ## Agenda of ThaRegGA development and application:
 1. prove of concept using a target gene (TBD) and:
@@ -12,6 +12,17 @@ Reference guided assembly of target sequence using tools such as TRegGA (https:/
 2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
 4. Application of ThaRegGA on finding Xa7 gene.
+
+## Workflow description:
+1. Blat of sample contigs (by SOAP-denovo assembly) against WG reference.
+
+## Workflow execution:
+1. Edit and setup the parameters as described in 0SOURCE, then `source 0SOURCE`
+2. Edit and prepare for the prerequisite files and softwares as described in PREREQ.sh, then `sh PREREQ.sh`
+3. (Optional) Submit qsub script for whole genome variant calling on Mason: `sh x1-WGvarSNP`
+4. Submit qsub script for targeted on Mason: `qsub x2-WGindel`
+5. Find main outputs in *data/*.
+6. Cleanup files with `sh xcleanup`
 
 ## Sub-directories for workflow implementation:
 1. *prereq/*: prerequisite inputs such as retrieval and storage of TRegGA assembled contigs; retrieval and storage of reference genomes, preparation of BLAST+ database for reference genome.
