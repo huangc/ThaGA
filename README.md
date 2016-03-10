@@ -19,9 +19,12 @@ Reference guided assembly of target sequence using tools such as TRegGA (https:/
 ## Workflow execution:
 1. Edit and setup the parameters as described in 0SOURCE, then `source 0SOURCE`
 2. Edit and prepare for the prerequisite files and softwares as described in PREREQ.sh, then `sh PREREQ.sh`
-3. (Optional) If sample vcf not available, submit qsub script for whole genome variant calling on Mason: `sh x1-WGvarSNP`
-4. Submit qsub script for Haplovar finder on Mason: `qsub x2-HaploVarFinder`
-5. Submit qsub script for denovo assembly of Haplovar contigs on Mason: `qsub x3-TRegGA-denovo`
+3. (Optional) If sample vcf not available, run whole genome variant calling: `sh x1-WGvarSNP`
+4. Run Haplovar finder: `qsub x2-HaplovarFinder`
+5. Run denovo assembly of Haplovar contigs: `qsub x3-TRegGA-denovo`
+6. Run indel fingerprinting of Haplovar contigs: `qsub x4-WGvarINDEL`
+7. Run supercontig assembly of Haplovar contigs: `qsub x5-TRegGA-denovo`
+8. Run rfguided assembly of sample contigs using Haplovar supercontig as reference: `qsub x6-TRegGA-rfguided`
 5. Find main outputs in *data/*.
 6. Cleanup files with `sh xcleanup`
 
