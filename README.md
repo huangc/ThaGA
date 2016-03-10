@@ -6,21 +6,22 @@ Reference guided assembly of target sequence using tools such as TRegGA (https:/
 
 ## Agenda of ThaRegGA development and application:
 1. prove of concept using a target gene (TBD) and:
-    * TRegGA of target gene with rice indica 93-11 reads against reference japonica
-    * TRegGA of target gene with rice indica 93-11 reads against reference using denovo assembled supercontigs from close haplotypes (manually selected) on the target gene.
-    * Comparison of result a and result b to 93-11 reference: result b should be closer to ref 93-11 than result a due to the use of ThaRegGA.
+   * TRegGA of target gene with rice indica 93-11 reads against reference japonica
+   * TRegGA of target gene with rice indica 93-11 reads against reference using denovo assembled supercontigs from close haplotypes (manually selected) on the target gene.
+   * Comparison of result a and result b to 93-11 reference: result b should be closer to ref 93-11 than result a due to the use of ThaRegGA.
 2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
 4. Application of ThaRegGA on finding Xa7 gene.
 
 ## Workflow description:
-1. Blat of sample contigs (by SOAP-denovo assembly) against WG reference.
+1. Prerequisite: 
+   * target region of interest on the reference genome Nipponbare IRGSP-1.0
 
 ## Workflow execution:
 1. Edit and setup the parameters as described in 0SOURCE, then `source 0SOURCE`
 2. Edit and prepare for the prerequisite files and softwares as described in PREREQ.sh, then `sh PREREQ.sh`
 3. (Optional) If sample vcf not available, run whole genome variant calling: `sh x1-WGvarSNP`
-4. Run Haplovar finder: `qsub x2-HaplovarFinder`
+4. Run haplovar finder: `qsub x2-HaplovarFinder`
 5. Run denovo assembly of Haplovar contigs: `qsub x3-TRegGA-denovo`
 6. Run indel fingerprinting of Haplovar contigs: `qsub x4-WGvarINDEL`
 7. Run supercontig assembly of Haplovar contigs: `qsub x5-TRegGA-denovo`
