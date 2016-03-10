@@ -1,3 +1,19 @@
+Skip to content
+This repository  
+Search
+Pull requests
+Issues
+Gist
+ @huangc
+ Unwatch 1
+  Star 1
+ Fork 0 huangc/WGvarINDEL
+ Code  Issues 0  Pull requests 0  Wiki  Pulse  Graphs  Settings
+Branch: master Find file Copy pathWGvarINDEL/0SOURCE
+09dca9e  8 days ago
+@huangc huangc Update 0SOURCE
+1 contributor
+RawBlameHistory     73 lines (64 sloc)  2.65 KB
 ## General
 EMAIL=youremail@indiana.edu
 WORK_DIR=/your_home/your_workdir
@@ -12,22 +28,17 @@ run_DIR=${WORK_DIR}/run
 scratch_DIR=${WORK_DIR}/scratch
 
 # REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
-REFSEQ=OsjCHR.fa
-# REFSEQ=OsjChr10.fa
+# REFSEQ=OsjCHR.fa
+REFSEQ=OsjChr10.fa
 # REFSEQNAME is the file name for REFSEQ without file extension.
-REFSEQNAME=OsjCHR
-# REFSEQNAME=OsjChr10
+# REFSEQNAME=OsjCHR
+REFSEQNAME=OsjChr10
 # REFGFF is the gene annotation gff3 file for REFSEQ, retrieved by bin/xgetseq, and located in prereq/.
 REFGFF=OsjCHR.gff3
 
 # SAMPLE is a list of sample names. Each sample name should be only one word.
-SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
-# SAMPLE="ZHENGSHAN97test ZHENGSHAN97test2"
-# SAMPLENAME is the collected sample name for reporting purpose, such as YB for all samples of YB1..YB8
-SAMPLENAME=YB
-# SAMPLENUM is the number of samples in this study
-SAMPLENUM=8
-
+# SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
+SAMPLE="ZHENGSHAN97test"
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
 # In order for the workflow to parse the contigs correctly, 
@@ -56,75 +67,24 @@ NUM_THREADS=4
 # GAPOPEN=4
 # GAPEXTEND=1
 
-## blat in x1-WGblat
+## blat
 # Add blat directory to the PATH
 # export PATH=$PATH:${src_DIR}/blatSuite
 PERC_IDENTITY=99
 MIN_SCORE=250
 
-## blat in x3-WGtalen
-# The deletion site from reference sequence plus its surrounding GAP_BORDER size is retrieved for 
-# blat alignment against sample contig for evaluation of the pTALEN target site. 
-# The blat alignment result could be suboptimal depending on the deletion's site in contig or its size. 
-# Adjust PERC_IDENTITY_RET value to optimize the blat alignment, if needed.
-PERC_IDENTITY_RET=95
-
 ## filtering the blat indel results 
-GAP_MINNUM=1 #Minimal number of gaps, more than and including this number. Set to 1 for alignment with gaps only.
-GAP_MINSIZE=5 #Minimal gap size in bp, more than and including this number.
-GAP_MAXSIZE=5000 #Maximal gap size in bp, less than and including this number.
+GAP_MINNUM=1 #Minimal number of gaps, more than and including this number. Set to 1 to filter for alignment that has at least one gap.
+GAP_MINSIZE=100 #Minimal gap size in bp, more than and including this number.
+GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
 
 ## qsub parameters for x1-WGblat job running on Mason 
 # The run time for whole genome blat of a typical 3kRGP rice cultivar contigs against reference rice Japonica
-# takes about 120 hrs on Mason. Plan carefully for submitting the job. 
-WALLTIME=120
+# takes about 90-100 hrs on Mason. Plan carefully for submitting the job. 
+# WALLTIME=120
+WALLTIME=24
 PPN=16
 VMEM=40
 
-## TALE-NT2 target finder
-# Add target finder to the PATH
-export PATH=$PATH:${src_DIR}/tale_nt2/talesf-paired
-#  Usage: pairedtalesf [options] sequence_file_path "rvdseq1" "rvdseq2"
-#  Options:
-#    -c|--cupstream        sets the allowed upstream bases; 0 for T only, 1 for C only, 2 for either
-#    -d|--dimer            sets types of dimer targets to search for; 0 for both homo and heterodimers, 
-#                          1 for heterodimers only, 2 for homodimers only
-#    -m|--min              the minimum allowed spacer size; default is 15
-#    -n|--numprocs         the number of processors to use; default is 1
-#    -o|--outfile          template filename to which output will be written; 
-#                          both a tab-delimited file and gff3 file will be produced
-#    -x|--max              the maximum allowed spacer size; default is 30
-#    -t|--cutoffmult       multiple of best score at which potential sites will be filtered; default is 3.0
-TPO_m=15
-TPO_x=30
-TPO_n=4
-TPO_t=3
-
-## PTALEN is a list of paired TALEN RVD sequences to be subject to the Target finder analysis.
-# The RVD sequences are defined in PREREQ.sh file
-PTALEN="pTALEN_Os11N3 pTALEN_Os8N3"
-
-## Association of pTALEN and deletion sites
-# In the result of Blat analysis (psl file), the pairwise sequence alignments are described as connected blocks.
-# The gap between blocks is used here to infer the gap derived from pTALEN binding and deletion.
-# A pTALEN binding site and a deletion site is called associated if the pTALEN site is within PDEL bp from the deletion site,
-# where PDEL is the distance in bp from the near edge of pTALEN to the near edge of deletion site.
-# Smaller PDEL value infer stronger association of pTALEN binding and deletion, and better candidate for pTALEN target.
-# Cases for how pTALEN (marked ==) are associated with the deletion. 
-# Sequence is marked -----, blanks are deletions, while the associated deletion is xxxxx.
-# RefSeq  |---------|       |-----------------|xxxxxxxxxxxx|----------------------------| 
-# Case1                         |==|<--PDEL-->|           
-# Case2                                                    |<---------PDEL------->|==|
-# Case3                                            |==|
-# Case3. PDEL is not considered for target selection when the pTALEN is situated inside the deletion.
-# In turns of better pTALEN targets, Case3 > Case1 > Case2.
-PDEL=10
-
-## Set the border size (bp) from gap for retrieving sequence for alignment
-GAP_BORDER=400
-
-## TDNA blast search parameters
-# TDNA is the TDNA vector sequence used for pTALEN mutagenesis
-TDNA=TALEN.fa
-TDNANAME=TDNA
-
+Status API Training Shop Blog About Pricing
+© 2016 GitHub, Inc. Terms Privacy Security Contact Help
