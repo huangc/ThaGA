@@ -17,7 +17,7 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 1. Identfy rice cultivars with closely-related haplotype (haplovars) to the sample with regards to the region of interest on the reference genome.
 2. Retrieve and denovo assembly of haplovar contigs.
 3. InDel fingerprinting of haplovar contigs for secondary validation (besides SNP fingerprinting in step1).
-4. Mix and match of SNP/InDel fingerprinted haplovar reads and contigs for de novo assembly of haplovar supercontigs.
+4. Mix and match of SNP/InDel fingerprint-validated haplovar reads and contigs for de novo assembly of haplovar supercontigs.
 5. (Optional) rfguided assembly of haplovar supercontigs into haplovar pseudomolecule with [multiple] reference genomes.
 6. rfguided assembly of sample reads/contigs using haplovar supercontig/pseudomolecule as reference.
 
