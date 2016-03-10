@@ -1,4 +1,4 @@
-# Targeted Haplotype-Assisted Genome Assembly
+# Targeted Haplotype-Assisted Reference-Guided Genome Assembly
 Contributed by Chun-Yuan Huang, 3/3/2016
 
 ## Aims: 
