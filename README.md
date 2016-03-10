@@ -15,7 +15,7 @@ Reference guided assembly of target sequence using tools such as TRegGA (https:/
 
 ## Workflow description:
 1. Prerequisite: 
-   * Cultivar name
+   * Cultivar of interest.
    * Region of interest on the reference genome Nipponbare IRGSP-1.0
 2. 
 
