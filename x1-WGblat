@@ -19,7 +19,7 @@ cd ${run_DIR}
 
 #-----
 #1. Blat of sample contigs (by SOAP-denovo assembly) against WG reference.
-# psl header is below. rep_match is Number of matching bases that are part of repeats. \
+# psl header is below. rep_match is Number of matching bases that are part of repeats.
 # Q is for Query, T is for Target, or Sample/Reference in Blastn.
 # block_count is Number of blocks in the alignment. blockSizes is Comma-separated list of sizes of each block.
 # match(#1), mis-match(#2), rep_match(#3), nCount(#4), Q_gap_count(#5), Q_gap_bases(#6), T_gap_count(#7), T_gap_bases(#8), 
