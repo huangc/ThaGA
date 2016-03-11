@@ -154,8 +154,8 @@ done
 # locus12345 1114 0 1357246 2476 500 YB1;YB2;YB4;YB5;YB6;YB8;
 # Note "q" (query) is for insertion, and "t" (target) is for deletion.
 
-for indel in t_onQ t_sum
-do
+indel=t_sum
+
 cd ${run_DIR}
 mkdir -p ${indel}
 cd ${indel}
@@ -187,14 +187,7 @@ tEnd=`cat rec.tEnd`
 tGapStart=$tEnd
 tGapSize=`cat rec.tGapSize`
 
-if [ ${indel} == "t_onQ" ]; then
-    echo "$i" >> $Tname.$tGapStart.$tGapSize.$Qname.$qGapStart.$qGapSize.sample
-elif [ ${indel} == "t_sum" ]; then
-    echo "$i" >> $Tname.$tGapStart.$tGapSize.sample
-else 
-    echo "Error does happen" >> err_indel
-fi
-
+echo "$i" >> $Tname.$tGapStart.$tGapSize.sample
 
 done
 done
@@ -216,30 +209,14 @@ done
 # Aggregate the above file contents about indel-sample into a table
 grep '' /dev/null *.sample > iloci.table
 # convert . and : into tab
-if [ ${indel} == "t_onQ" ]; then
-    sed 's/\./\t/g' iloci.table | sed 's/\:/\t/g' | \
-	awk '{ FS="\t"; print $1,$2,$3,$4,$5,$6,$8 }' | sort -k1 > tmp && \mv tmp iloci.table
-    echo "Tname tGapStart tGapSize Qname qGapStart qGapSize Samples" | \
-	cat - iloci.table > Seq.${indel}_Lg${GAP_MINSIZE}.table
-
-elif [ ${indel} == "t_sum" ]; then
-    sed 's/\./\t/g' iloci.table | sed 's/\:/\t/g' | \
+sed 's/\./\t/g' iloci.table | sed 's/\:/\t/g' | \
 	awk '{ FS="\t"; print $1,$2,$3,$5 }' | sort -k1 > tmp && \mv tmp iloci.table
-    echo "Tname tGapStart tGapSize Samples" | \
+echo "Tname tGapStart tGapSize Samples" | \
 	cat - iloci.table > Seq.${indel}_Lg${GAP_MINSIZE}.table
-else
-    echo "Error does happen" >> err_indel
-fi
-
-done
 
 ##---------------------------
 #7. Report
 cd ${data_DIR}
-for indel in t_onQ t_sum
-do
 \cp ${run_DIR}/${indel}/Seq*_Lg* .
-done
-
 rename Seq.t SeqDel Seq.t*
 
