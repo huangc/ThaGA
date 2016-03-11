@@ -4,7 +4,6 @@
    * Comparison of result (a) and (b) to 93-11 reference: result (b) should be closer to ref 93-11 than result (a) due to the use of ThaRegGA.
 2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
-4. Application of ThaRegGA on finding Xa7 gene.
 
 ## Target region:
 1. 
