@@ -2,10 +2,10 @@
 Contributed by Chun-Yuan Huang, 3/10/2016
 
 ## Aims: 
-Reference guided (rfguided) assembly of target sequence using tools such as TRegGA [1] often show different results on the target gene assembly when different reference genomes are used. It become critical to select the "correct" reference for optimal assembly when the sample sequence is distant in phylogeny from available references. This workflow Targeted Haplotype-Assisted Reference-Guided Genome Assembly (ThaRegGA) aims to build a reliable targeted reference sequence in order to improve the accuracy of targeted rfguided genome assembly. Taking advantage of the Rice 3,000 Genome Project (3kRGP) [2] and SNP-Seek database [3], the ThaRegGA takes a specific rice cultivar and the genomic coordinate of the target region of interest on rice reference IRGSP-1.0 as inputs, applies a haplotype search algorithm to identify cultivars in SNP-Seek database that have high similarity in haplotype with regard to the target region of interest (we call such cultivars as **Haplovars**), retrieves the haplovar reads from 3kRGP [4] for denovo assembly, then returns with a superscaffold sequence with annotation in embl format. The ThaRegGA superscaffold can serve to replace the original IRGSP reference sequence as a more reliable alternative reference in order to gain accurate rfguided assembly of the target gene. Combines with TRegGA, this workflow output more reliable and accurate targeted sequence assembly that should be valuable in applications such as disease gene identification and characterization. 
+Reference guided (rfguided) assembly of target sequence using tools such as TRegGA [1] often show different results on the target gene assembly when different reference genomes are used. It become critical to select the "correct" reference for optimal assembly when the sample sequence is distant in phylogeny from available references. This workflow Targeted Haplotype-Assisted Reference-Guided Genome Assembly (ThaRegGA) aims to build a reliable targeted reference sequence in order to improve the accuracy of targeted rfguided genome assembly. Taking advantage of the Rice 3,000 Genome Project (3kRGP) [2] and SNP-Seek database [3], the ThaRegGA takes a specific rice cultivar and the genomic coordinate of the target region of interest on rice reference IRGSP-1.0 as inputs, applies a haplotype search function [4] to identify cultivars in SNP-Seek database that have high similarity in haplotype with regard to the target region of interest (we call such cultivars as **Haplovars**), retrieves the haplovar reads from 3kRGP [5] for denovo assembly, then returns with a superscaffold sequence with annotation in embl format. The ThaRegGA superscaffold can serve to replace the original IRGSP reference sequence as a more reliable alternative reference in order to gain accurate rfguided assembly of the target gene. Combines with TRegGA, this workflow output more reliable and accurate targeted sequence assembly that should be valuable in applications such as disease gene identification and characterization. 
 
 ## Workflow prerequisite:
-1. TRegGA installation.
+1. TRegGA [1] installed.
 
 ## Workflow description:
 1. Identfy haplovars to the sample with regards to the region of interest on the reference genome.
@@ -19,7 +19,7 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 1. Edit and setup the parameters as described in 0SOURCE, then `source 0SOURCE`
 2. Edit and prepare for the prerequisite files and softwares as described in PREREQ.sh, then `sh PREREQ.sh`
 3. (Optional) If sample vcf not available, run whole genome variant calling: `sh x1-WGvarSNP-Seek`
-4. Run haplovar finder: `qsub x2-HaplovarFinder`
+4. Run haplotype search function for haplovar identification: `qsub x2-HaplovarFinder`
 5. Run denovo assembly of haplovar contigs and scaffolds: `qsub x3-TRegGA-denovo`
 6. Run whole genome blat alignment on haplovar contigs: `sh x4-WGblat`
 6. Run indel fingerprinting of haplovar contigs: `qsub x5-WGindelTT`
@@ -40,4 +40,5 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 1. TRegGA: https://github.com/BrendelGroup/TRegGA
 2. 3,000 rice genomes project. The 3,000 rice genomes project. Gigascience. 2014  May 28;3:7.
 3. Alexandrov N, et al. SNP-Seek database of SNPs derived from 3000 rice genomes. Nucleic Acids Res. 2015 Jan;43(Database issue):D1023-7.
-4. The Rice 3000 Genomes Project Data. http://gigadb.org/dataset/200001.
+4. Murat Öztürk, https://github.com/muzcuk/rice3k
+5. The Rice 3000 Genomes Project Data. http://gigadb.org/dataset/200001.
