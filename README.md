@@ -24,6 +24,14 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 5. Find main outputs in *data/*.
 6. Cleanup files with `sh xcleanup`
 
+## Sub-directories for workflow implementation:
+1. *prereq/*: prerequisite inputs such as retrieval and storage of TRegGA assembled contigs; retrieval and storage of reference genomes, preparation of BLAST+ database for reference genome.
+2. *doc/*: reference and tutorial documents.
+3. *bin/*: ancillary codes and scripts.
+4. *src/*: prerequisite softwares
+5. *run/*: main scripts and execution results.
+6. *data/*: final outputs and reports.
+
 ## Agenda of ThaRegGA development and application:
 1. prove of concept using a target gene (TBD) and:
    a. TRegGA of target gene with rice indica 93-11 reads against reference japonica
@@ -32,14 +40,6 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
 4. Application of ThaRegGA on finding Xa7 gene.
-
-## Sub-directories for workflow implementation:
-1. *prereq/*: prerequisite inputs such as retrieval and storage of TRegGA assembled contigs; retrieval and storage of reference genomes, preparation of BLAST+ database for reference genome.
-2. *doc/*: reference and tutorial documents.
-3. *bin/*: ancillary codes and scripts.
-4. *src/*: prerequisite softwares
-5. *run/*: main scripts and execution results.
-6. *data/*: final outputs and reports.
 
 ## Reference:
 1. TRegGA: https://github.com/BrendelGroup/TRegGA
