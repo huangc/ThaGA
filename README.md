@@ -18,7 +18,7 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 ## Workflow execution:
 1. Edit and setup the parameters as described in 0SOURCE, then `source 0SOURCE`
 2. Edit and prepare for the prerequisite files and softwares as described in PREREQ.sh, then `sh PREREQ.sh`
-3. (Optional) If sample vcf not available, run whole genome variant calling: `sh x1-WGvarSNP-Seek`
+3. (Optional) If sample vcf is not available, run whole genome variant calling: `sh x1-WGvarSNP-Seek`
 4. Run haplotype search function for haplovar identification: `qsub x2-HaplovarFinder`
 5. Run denovo assembly of haplovar contigs and scaffolds: `qsub x3-TRegGA-denovo`
 6. Run whole genome blat alignment on haplovar contigs: `sh x4-WGblat`
