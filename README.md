@@ -11,7 +11,7 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 1. Identfy haplovars to the sample with regards to the region of interest on the reference genome.
 2. Retrieve and denovo assembly of haplovar contigs and scaffolds.
 3. InDel fingerprinting of haplovar contigs for secondary validation (besides SNP fingerprinting in step1).
-4. Mix and match of SNP/InDel fingerprint-validated haplovar reads and scaffolds for de novo assembly of haplovar superscaffolds.
+4. Mix and match of SNP/InDel fingerprint-validated haplovar reads and scaffolds for denovo assembly of haplovar superscaffolds.
 5. (Optional) rfguided assembly of haplovar superscaffolds into haplovar pseudomolecule with [multiple] reference genomes.
 6. rfguided assembly of sample reads/scaffolds using haplovar superscafffolds/pseudomolecule as reference.
 
