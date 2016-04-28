@@ -22,12 +22,11 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 4. Run haplotype search program to identify haplovars: `qsub x2-HaplovarFinder`
 5. Run denovo assembly of haplovar contigs and scaffolds: `qsub x3-TRegGA-denovo`
 6. Run whole genome blat alignment on haplovar contigs: `sh x4-WGblat`
-6. Run InDel fingerprinting of haplovar contigs: `qsub x5-WGindelT`
-7. Run DFP clustering to identify close-relatives of haplovar contigs: `qsub x6-DFPtree`
-7. Run superscaffold assembly of haplovar scaffolds: `qsub x7-TRegGA-denovo`
-8. Run rfguided assembly of sample scaffolds using haplovar superscaffolds as reference: `qsub x8-TRegGA-rfguided`
-5. Find main outputs in *data/*.
-6. Cleanup files with `sh xcleanup`
+7. Run Deletion Fingerprinting (DFP) of haplovar contigs: `qsub x5-WGindelT`
+8. Run DFP clustering to identify close-relatives of haplovar contigs: `qsub x6-DFPtree`
+9. Run superscaffold assembly of haplovar scaffolds, then use that as reference for rfguided assembly: `qsub x7-TRegGA-rfguided`
+10. Find main outputs in *data/*.
+11. Cleanup files with `sh xcleanup`
 
 ## Sub-directories for workflow implementation:
 1. *prereq/*: prerequisite inputs such as retrieval and storage of TRegGA assembled contigs; retrieval and storage of reference genomes, preparation of BLAST+ database for reference genome.
