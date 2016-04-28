@@ -46,13 +46,13 @@ cd ${TRegGA_DIR}
 # make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/reads/${SYNONYM}/${SYNONYM}_1.fa >& err_${SYNONYM}-reads
 
 # For the read prep and denovo assembly and no more.
-# make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/assembly/denovo/${SYNONYM}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa >& err_${SYNONYM}-denovo
+make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/assembly/denovo/${SYNONYM}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa >& err_${SYNONYM}-denovo
 
 # For the target prep only
 # make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig ${TRegGA_DIR}/targets/${TARGET}.embl >& err_${SYNONYM}-TargetPrep-${TARGET}
 
 # For the entire workflow
-make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig >& err_${SYNONYM}-on-${TARGET}
+# make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig >& err_${SYNONYM}-on-${TARGET}
 
 ##---------------------------
 # Traverse to ${TRegGA_DIR}/assembly/rfguided/${SYNONYM}-on-${TARGET}/EVALUATION for the assembly results.
