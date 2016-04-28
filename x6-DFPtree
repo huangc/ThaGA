@@ -1,0 +1,197 @@
+#!/bin/bash
+#PBS -m abe
+#PBS -l nodes=1:ppn=20,vmem=20gb,walltime=12:00:00
+#PBS -N x4-DFPtree
+#PBS -j oe
+
+module add python
+
+## Aim: Find Deletion Fingerprints (DFP), which is defined as a set of deletions of the assembled contigs when compared to the reference genome. 
+#  The deletions are further restricted to the genic region (giloci) with the minimal length GAP_MINSIZE_FP in order to reduce the noise 
+#  from sequencing/assembly errors on repetitive and low complexity regions.
+
+# Shared DFPs are defined as DFPs that have the exact same deletion start and end positions on the reference genome.
+# Sample DFP vector is a binary vector of sample that represents the prsence/absence of each accounted DFPs from all samples in comparison.
+# The DFP distance between sample i and j is defined as the Hamming distance of the sample DFP vector i and j, 
+# divided by the total number of accounted DFPs from all samples in comparison. 
+# DFP distance of 0 indicates complete identical on all accounted DFPs, and distance of 1 indicates complete heterogeneous on all accounted DFPs.
+
+# Input: Deletion summary table: ${data_DIR}/Seq.t_Lg${GAP_MINSIZE}.table, generated from x2-WGindelT with the content:
+# "Tname tGapStart tGapSize Samples" 
+# Methods: Filter the deletion summary table based on overlapping giloci.
+# Output: Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci, with the content:
+# "Tname tGapStart tGapSize tGapEnd Samples iloci"
+#----------------------------
+
+cd $PBS_O_WORKDIR
+source ./0SOURCE
+cd ${run_DIR}
+
+#-----
+#1. Generate iLOCUS for the genic regions plus ${DELTA} kb up- and downstram regions of the reference genome.
+#   Note that MSUGFF instead of REFGFF is used here for the compatibility issue with program locuspocus.
+mkdir -p iloci
+cd iloci
+ln -s ${prereq_DIR}/${MSUGFF} .
+${LOCUSPOCUS_DIR}/locuspocus --delta ${DELTA} --cds --verbose --genemap ${ILOCUSNAME}.genemap --retainids --skipiiloci --outfile ${ILOCUSGFF} ${MSUGFF}
+${XTRACTORE_DIR}/xtractore --type=locus ${ILOCUSGFF} ${prereq_DIR}/${REFSEQ} > ${ILOCUSSEQ}
+makeblastdb -in ${ILOCUSSEQ} -dbtype nucl -out ${DB_ILOCUS} -parse_seqids
+# sort -k 2,2 ${ILOCUSNAME}.genemap > tmp && \mv tmp ${ILOCUSNAME}.genemap
+
+#2. Extract the iloci records from ILOCUSGFF (OsjLOCUS.gff3)
+# QsjChr1 AEGeAn::LocusPocus      locus   2903    11817   .       .       .       ID=locus1;Name=locus1;gene=1;mRNA=2;right_overlap=1600;iiLocus_exception=delta-overlap-gene;riil=0;effective_length=7315;iLocus_type=piLocus
+# OsjChr1 AEGeAn::LocusPocus      locus   10218   13435   .       .       .       ID=locus2;left_overlap=1600;liil=0;Name=locus2;gene=1;mRNA=1;right_overlap=1788;iiLocus_exception=delta-overlap-gene;riil=0;effective_length=1430;iLocus_type=piLocus
+
+grep "LocusPocus" ${ILOCUSGFF} > iLOCI.gff3
+awk '{ print $1,$4,$5,$9 }' iLOCI.gff3 | sed 's/;/ /g' | awk '{ print $1,$2,$3,$4 }' |\
+ sed 's/ID=//g' > iLOCI.table
+## Example of iLOCI.table
+# OsjChr1 2903 11817 locus1
+# OsjChr1 10218 13435 locus2
+
+
+#3. Re-filter the deletion table according to the redefined GAP_MINSIZE.
+# Tname tGapStart tGapSize Samples
+# OsjChr10 10744678 358 YB3;
+# OsjChr10 10766127 121 NIPPONBARE;YB2;YB3;YB4;YB5;YB6;YB7;YB8;
+# OsjChr10 10790085 131 NIPPONBARE;YB2;YB3;YB5;YB7;YB8;
+# OsjChr10 10808634 306 YB4;
+# OsjChr10 10844270 366 YB2;YB6;YB7;YB8;
+
+\cp ${run_DIR}/t_sum/Seq.t_sum_Lg${GAP_MINSIZE}.table .
+awk -v gap_minsize="${GAP_MINSIZE_FP}" -v gap_maxsize="${GAP_MAXSIZE_FP}" '{ OFS="\t"; if ( $3 >= gap_minsize && $3 <= gap_maxsize ) print $0 }' \
+ Seq.t_sum_Lg${GAP_MINSIZE}.table > tmp && \mv tmp Seq.t_sum_Lg${GAP_MINSIZE_FP}.table
+
+
+#4. Filter the deletion table based on overlapping iloci by
+# removing the deletion records that are located entirely in the intergenic region (between iloci with no overlapping) 
+# step1: merge each deletion record with iLOCI.table. 
+# step2: Sort and grep the lines before and after ilocus record in the deletion table, 
+#        which contain the potentially overlapping deletion sites.
+# step3: grep the neighboring iloci before and after the deletion record
+# step4: if delStart > beforeLocusEnd && delEnd < afterLocusStart, write this to iiLOCUS.del
+#        else if delStart < beforeLocusEnd, write the beforeLocusName and deletion record to iLOCUS.del
+#        else if delEnd > afterLocusStart, write the afterLocusName and deletion record to iLOCUS.del
+
+# Below is an example of merged iLOCI.table and neighboring deletion sites
+# OsjChr10 5779856 5790347 locus7372
+# OsjChr10 5789870 246 YB1;YB5;YB6;YB7;YB8;
+# OsjChr10 5793555 5796914 locus7373
+
+\rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
+\rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI
+row=`awk 'END { print NR }' Seq.t_sum_Lg${GAP_MINSIZE_FP}.table`
+for ((m=1; m<=$row; m++))
+do
+head -$m Seq.t_sum_Lg${GAP_MINSIZE_FP}.table | tail -1 > delrec
+Tname=`cut -d " " -f1 delrec`
+tGapStart=`cut -d " " -f2 delrec`
+tGapSize=`cut -d " " -f3 delrec`
+tGapEnd=`expr $tGapStart + $tGapSize`
+Samples=`cut -d " " -f4 delrec`
+
+cat delrec iLOCI.table | grep -w "${Tname}" | sort -k2 -n |\
+ grep -B1 -A1 ${Samples} > delrec.${Tname}.${tGapStart}
+
+grep -v "${Samples}" delrec.${Tname}.${tGapStart} > delrec.${Tname}.${tGapStart}.iloci
+\rm beforeLocus
+\rm afterLocus
+len=`awk 'END { print NR }' delrec.${Tname}.${tGapStart}.iloci`
+for ((p=1; p<=$len; p++))
+do
+head -$p delrec.${Tname}.${tGapStart}.iloci | tail -1 > iloc
+Tname=`cut -d " " -f1 iloc`
+locusStart=`cut -d " " -f2 iloc`
+locusEnd=`cut -d " " -f3 iloc`
+locusID=`cut -d " " -f4 iloc`
+if (( ${locusStart} <= ${tGapStart} )); then
+    cat iloc > beforeLocus
+else
+    cat iloc > afterLocus
+fi
+done
+
+beforeLocusStart=`cut -d " " -f2 beforeLocus`
+beforeLocusEnd=`cut -d " " -f3 beforeLocus`
+beforeLocusID=`cut -d " " -f4 beforeLocus`
+afterLocusStart=`cut -d " " -f2 afterLocus`
+afterLocusEnd=`cut -d " " -f3 afterLocus`
+afterLocusID=`cut -d " " -f4 afterLocus`
+
+# step4: if gapStart > beforeLocusEnd && gapEnd < afterLocusStart, write this to iiLOCUS.del
+#        else if gapStart < beforeLocusEnd, write the beforeLocusID and delrec to iLOCUS.del
+#        else if gapEnd > afterLocusStart, write the afterLocusID and delrec to iLOCUS.del
+
+if (( ${tGapStart} >= ${beforeLocusEnd} && ${tGapEnd} <= ${afterLocusStart} )); then
+    echo "${Tname} ${tGapStart} ${tGapSize} ${tGapEnd} ${Samples} intergenic" >> Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
+elif (( ${tGapStart} < ${beforeLocusEnd} )); then
+    echo "${Tname} ${tGapStart} ${tGapSize} ${tGapEnd} ${Samples} ${beforeLocusID}" >> Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
+elif (( ${tGapEnd} > ${afterLocusStart} )); then
+    echo "${Tname} ${tGapStart} ${tGapSize} ${tGapEnd} ${Samples} ${afterLocusID}" >> Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
+else
+    echo "${Tname} ${tGapStart} ${tGapSize} ${tGapEnd} ${Samples} unknown" >> Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
+fi
+
+done
+
+echo "Tname tGapStart tGapSize tGapEnd Samples iloci" |\
+ cat - Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci > Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI
+
+grep -v "intergenic" Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci | grep -v "unknown" > Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci
+grep -v "intergenic" Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI | grep -v "unknown" > Seq.t_sum_Lg${GAP_MINSIZE_FP}.gILOCI
+
+
+#5. Input is file Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci with the content such as:
+# Tname tGapStart tGapSize tGapEnd Samples iloci
+# OsjChr1 10008136 275 10008411 CHINGLIU;KEYANUNIA;ARC11571;CHINGCHUNG;CR441;JC_157;MADHUWAKARIA;NIAOYAO;OSATIVA; locus1510
+# Transform the above table into a matrix sush as:
+# Tname tGapStart tGapSize tGapEnd A2_257;BINIAPAN;CHINGLIU;GINMASARI;KEYANUNIA;KOTOOURA;MANYALOJOPOIHUN;NIPPONBARE;PATIEROUGE;ARC11571;CHINGCHUNG;
+# OsjChr1 10008136 275 10008411 0;0;1;0;1;0;0;0;0;1;1;
+
+cd ${run_DIR}/iloci
+\rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix
+len=`awk 'END { print NR }' Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci`
+for ((k=1; k<=$len; k++))
+do
+head -$k Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci | tail -1 > rec
+Tname=`cut -d " " -f1 rec`
+tGapStart=`cut -d " " -f2 rec`
+tGapSize=`cut -d " " -f3 rec`
+tGapEnd=`cut -d " " -f4 rec`
+Samples=`cut -d " " -f5 rec | tr ";" " "`
+iloci=`cut -d " " -f6 rec`
+
+\rm rec.SAMPLE
+for i in ${SAMPLE}
+do
+if [[ $Samples =~ $i  ]]; then
+    echo "1" >> rec.SAMPLE
+else
+    echo "0" >> rec.SAMPLE
+fi
+done
+awk 1 ORS=';' rec.SAMPLE > rec_SAMPLE
+recSAMPLE=`cat rec_SAMPLE | tr ";" " "`
+echo "${Tname}_${tGapStart}_${tGapSize}_${tGapEnd} ${recSAMPLE}" >> Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix
+done
+
+## There appears to be an extra whitespace at the end of each line, and has to be removed for followup importing into python pandas dataframe
+sed -i 's/\s$//g' Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix
+
+recSAMPLEname=`echo $SAMPLE`
+echo "Tname_tGapStart_tGapSize_tGapEnd $recSAMPLEname" | cat - Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix > Seq.t_sum_Lg${GAP_MINSIZE_FP}.Matrix
+
+
+#6. Python script to take the Seq.t_sum_Lg${GAP_MINSIZE_FP}.Matrix and compute a symmetrical nonnegative N-by-N distance matrix DM,
+# where DM[i,j] is the hamming distance between samples feature vectors i and j.
+# Usage: DFPtree.py infile outfile
+cd ${run_DIR}/iloci
+python ${bin_DIR}/DFPtree.py Seq.t_sum_Lg${GAP_MINSIZE_FP}.Matrix Seq.t_sum_Lg${GAP_MINSIZE_FP}.dmx
+
+
+##----------------------
+## Report
+cd ${data_DIR}
+\cp -r ${run_DIR}/iloci/Seq.t_sum* .
+rename Seq.t ${SAMPLENAME}_SeqDel Seq.t*
+
