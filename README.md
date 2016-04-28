@@ -22,7 +22,7 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 4. Run haplotype search program to identify haplovars: `qsub x2-HaplovarFinder`
 5. Run denovo assembly of haplovar contigs and scaffolds: `qsub x3-TRegGA-denovo`
 6. Run whole genome blat alignment on haplovar contigs: `sh x4-WGblat`
-6. Run InDel fingerprinting of haplovar contigs: `qsub x5-WGindelTT`
+6. Run InDel fingerprinting of haplovar contigs: `qsub x5-WGindelT`
 7. Run superscaffold assembly of haplovar scaffolds: `qsub x6-TRegGA-denovo`
 8. Run rfguided assembly of sample scaffolds using haplovar superscaffolds as reference: `qsub x7-TRegGA-rfguided`
 5. Find main outputs in *data/*.
