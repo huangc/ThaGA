@@ -7,6 +7,18 @@ WGvarINDEL is implemented as a collection of shell scripts and ancillary Python 
 For IU Mason cluster users, the prerequisite softwares can be loaded from the system:
 - module add blat/35
 
+### Anaconda
+* See https://docs.continuum.io/anaconda
+* Last update: Apr. 2016
+* numpy, scipy, matplotlib and pandas are required python packages for /bin/DFPtree.py.
+```bash
+cd ${src_DIR}
+mkdir anaconda
+cd anaconda
+# download the installer from https://www.continuum.io/downloads
+bash Anaconda3-4.0.0-Linux-x86_64.sh
+```
+
 ### Blat
 * See https://genome.ucsc.edu/FAQ/FAQblat.html.
 * Last update: Dec. 2014
