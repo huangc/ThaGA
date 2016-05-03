@@ -1,12 +1,49 @@
 ## *src/* directory contains prerequisite softwares:
+- TRegGA
+- rice3k
 - blat
 - blast+
 
-WGvarINDEL is implemented as a collection of shell scripts and ancillary Python codes, so no compilation is required. However, the workflow depends on several third-party programs, and many of which do require compiling and/or additional configuration for your particular system. Please see the cited URLs below for details on the software installation. *src/* is assumed for the installation path, but should be replaced with the actual path.
+ThaRegGA is implemented as a collection of shell scripts and ancillary Python codes, so no compilation is required. However, the workflow depends on several third-party programs, and many of which do require compiling and/or additional configuration for your particular system. Please see the cited URLs below for details on the software installation. *src/* is assumed for the installation path, but should be replaced with the actual path.
 
 For IU Mason cluster users, the prerequisite softwares can be loaded from the system:
 - module add blat/35
 
+### Install TRegGA
+cd ${GIT_DIR}
+git clone https://github.com/huangc/TRegGA.git
+# Read setup and execution details: ${GIT_DIR}/TRegGA/TRegGA-Example.md
+
+### Install "rice3k", author: Murat Öztürk
+cd ${GIT_DIR}
+git clone https://github.com/muzcuk/rice3k.git
+rice3k_DIR=${GIT_DIR}/rice3k
+
+# Setup "rice3k"
+# Retrieve reference genome sequence and annotation
+# Retrieve SNP-Seek datasets: NB-core_v4 and 3krg_filt_snp_v4
+# If SNPs in the coding region is needed, run Makefile inside /NB-core_v4 and /3krg_filt_snp_v4.
+cd ${rice3k_DIR}/data/
+make -f Makefile
+
+# Add rice3k/scripts to PYTHONPATH
+echo '# added by rice3k
+export PYTHONPATH="$PYTHONPATH:/projects/huangcy/MYGIT/rice3k/scripts"
+' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
+source ~/.bashrc
+
+### Plink
+* See http://pngu.mgh.harvard.edu/~purcell/plink
+* Last update: May 2014
+```bash
+cd ${src_DIR}
+mkdir plink
+cd plink
+wget https://www.cog-genomics.org/static/bin/plink160416/plink_linux_x86_64.zip
+unzip plink_linux_x86_64.zip
+export PATH=$PATH:${src_DIR}/plink
+
+```
 ### Anaconda
 * See https://docs.continuum.io/anaconda
 * Last update: Apr. 2016
@@ -30,6 +67,16 @@ source ~/.bashrc
 
 ```
 
+# Install Python Pyvcf package
+# details in http://pyvcf.readthedocs.io/en/latest/
+pip install pyvcf
+
+# Install Python Bio package
+pip install biopython
+
+
+
+
 ### Blat
 * See https://genome.ucsc.edu/FAQ/FAQblat.html.
 * Last update: Dec. 2014
@@ -40,6 +87,7 @@ cd blatSuite
 wget http://hgwdev.cse.ucsc.edu/~kent/exe/linux/blatSuite.zip
 unzip blatSuite.zip
 export PATH=$PATH:${src_DIR}/blatSuite
+
 ```
 
 ### BLAST
@@ -52,4 +100,5 @@ cd blast
 wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.3.0/ncbi-blast-2.3.0+-x64-linux.tar.gz
 tar -xzf ncbi-blast-2.3.0+-x64-linux.tar.gz
 export PATH=$PATH:${src_DIR}/blast//ncbi-blast-2.3.0+/bin
+
 ```
