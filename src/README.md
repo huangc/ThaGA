@@ -80,13 +80,14 @@ source ~/.bashrc
 ```
 
 ### Install Python Pyvcf package
-# details in http://pyvcf.readthedocs.io/en/latest/
+* See http://pyvcf.readthedocs.io/en/latest/
 ```bash
 pip install pyvcf
 
 ```
 
-### Install Python Bio package
+### Install Python Biopython package
+* See http://biopython.org/wiki/Biopython
 ```bash
 pip install biopython
 
