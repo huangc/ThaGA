@@ -1,6 +1,10 @@
 ## *src/* directory contains prerequisite softwares:
 - TRegGA
 - rice3k
+- plink
+- Anaconda2
+- Python package Pyvcf
+- Python package Biopython
 - blat
 - blast+
 
@@ -10,27 +14,34 @@ For IU Mason cluster users, the prerequisite softwares can be loaded from the sy
 - module add blat/35
 
 ### Install TRegGA
+* See https://github.com/huangc/TRegGA
+* Last update: April 2016
+* Step-by-step setup at: ${GIT_DIR}/TRegGA/TRegGA-Example.md
+```bash
 cd ${GIT_DIR}
 git clone https://github.com/huangc/TRegGA.git
-# Read setup and execution details: ${GIT_DIR}/TRegGA/TRegGA-Example.md
+
+```
 
 ### Install "rice3k", author: Murat Öztürk
+* See https://github.com/muzcuk/rice3k
+* Last update: April 2016
+```bash
 cd ${GIT_DIR}
 git clone https://github.com/muzcuk/rice3k.git
-rice3k_DIR=${GIT_DIR}/rice3k
-
 # Setup "rice3k"
 # Retrieve reference genome sequence and annotation
 # Retrieve SNP-Seek datasets: NB-core_v4 and 3krg_filt_snp_v4
 # If SNPs in the coding region is needed, run Makefile inside /NB-core_v4 and /3krg_filt_snp_v4.
 cd ${rice3k_DIR}/data/
 make -f Makefile
-
 # Add rice3k/scripts to PYTHONPATH
 echo '# added by rice3k
 export PYTHONPATH="$PYTHONPATH:/projects/huangcy/MYGIT/rice3k/scripts"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 source ~/.bashrc
+
+```
 
 ### Plink
 * See http://pngu.mgh.harvard.edu/~purcell/plink
@@ -44,7 +55,8 @@ unzip plink_linux_x86_64.zip
 export PATH=$PATH:${src_DIR}/plink
 
 ```
-### Anaconda
+
+### Anaconda2
 * See https://docs.continuum.io/anaconda
 * Last update: Apr. 2016
 * numpy, scipy, matplotlib and pandas are required python packages for /bin/DFPtree.py.
@@ -67,15 +79,18 @@ source ~/.bashrc
 
 ```
 
-# Install Python Pyvcf package
+### Install Python Pyvcf package
 # details in http://pyvcf.readthedocs.io/en/latest/
+```bash
 pip install pyvcf
 
-# Install Python Bio package
+```
+
+### Install Python Bio package
+```bash
 pip install biopython
 
-
-
+```
 
 ### Blat
 * See https://genome.ucsc.edu/FAQ/FAQblat.html.
