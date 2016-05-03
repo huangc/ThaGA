@@ -46,6 +46,7 @@ SAMPLENUM=26
 ## SNP_DIR for snp files in vcf format. 
 # vcf files are retrieved from SNP-Seek: http://oryzasnp.org/iric-portal/_variety.zul, then
 # SNPs are called using WGvarSNP workflow: https://github.com/huangc/WGvarSNP
+# snp files have this extention: *_env_snp.vcf
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
 
 ## TRegGA parameters
