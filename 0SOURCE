@@ -36,7 +36,7 @@ REFGFF=OsjCHR.gff3
 # SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
 SAMPLE="ZHENGSHAN97"
 # SAMPLENAME is the collected sample name for reporting purpose, such as YB for all samples of YB1..YB8
-SAMPLENAME=ThaRegGAtest
+SAMPLENAME=ThaRegGA_test
 # SAMPLENUM is the number of samples in this study
 SAMPLENUM=1
 
