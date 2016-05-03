@@ -42,7 +42,8 @@ git clone https://github.com/huangc/WGtalenTarget.git
 ```
 
 ### rice3k 
-* See https://github.com/muzcuk/rice3k, author: Murat Öztürk
+* Author: Murat Öztürk
+* See https://github.com/muzcuk/rice3k
 * Last update: April 2016
 ```bash
 cd ${GIT_DIR}
