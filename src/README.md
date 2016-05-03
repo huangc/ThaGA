@@ -7,8 +7,8 @@
 - Anaconda2
 - Python package Pyvcf
 - Python package Biopython
-- blat
-- blast+
+- Blat
+- Blast+
 
 ThaRegGA is implemented as a collection of shell scripts and ancillary Python codes, so no compilation is required. However, the workflow depends on several third-party programs, and many of which do require compiling and/or additional configuration for your particular system. Please see the cited URLs below for details on the software installation. *src/* is assumed for the installation path, but should be replaced with the actual path.
 
@@ -124,7 +124,7 @@ export PATH=$PATH:${src_DIR}/blatSuite
 
 ```
 
-### BLAST
+### Blast+
 * See https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download.
 * Last update: Dec. 2015
 ```bash
