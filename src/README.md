@@ -1,5 +1,6 @@
 ## *src/* directory contains prerequisite softwares:
 - TRegGA
+- WGvarSNP
 - rice3k
 - plink
 - Anaconda2
@@ -23,13 +24,20 @@ git clone https://github.com/huangc/TRegGA.git
 
 ```
 
+### Install WGvarSNP
+* See https://github.com/huangc/WGvarSNP
+* Last update: Feb. 2016
+```bash
+git clone https://github.com/huangc/WGvarSNP.git
+
+```
+
 ### Install "rice3k", author: Murat Öztürk
 * See https://github.com/muzcuk/rice3k
 * Last update: April 2016
 ```bash
 cd ${GIT_DIR}
 git clone https://github.com/muzcuk/rice3k.git
-# Setup "rice3k"
 # Retrieve reference genome sequence and annotation
 # Retrieve SNP-Seek datasets: NB-core_v4 and 3krg_filt_snp_v4
 # If SNPs in the coding region is needed, run Makefile inside /NB-core_v4 and /3krg_filt_snp_v4.
