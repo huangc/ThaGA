@@ -1,6 +1,6 @@
 ## General
 EMAIL=youremail@indiana.edu
-WORK_DIR=`pwd`
+WORK_DIR=$(pwd)
 
 ## Sub-directory for workflow
 prereq_DIR=${WORK_DIR}/prereq
@@ -10,6 +10,16 @@ src_DIR=${WORK_DIR}/src
 data_DIR=${WORK_DIR}/data
 run_DIR=${WORK_DIR}/run
 scratch_DIR=${WORK_DIR}/scratch
+
+## Local Github repositiries:
+# Local github root GIT_DIR is assumed to be parent of ThaRegGA_DIR
+ThaRegGA_DIR=$(pwd)
+GIT_DIR="$(dirname "${ThaRegGA_DIR}")"
+TRegGA_DIR=${GIT_DIR}/TRegGA
+rice3k_DIR=${GIT_DIR}/rice3k
+WGvarSNP_DIR=${GIT_DIR}/WGvarSNP_DIR
+WGvarINDEL_DIR=${GIT_DIR}/WGvarINDEL_DIR
+WGtalenTarget_DIR=${GIT_DIR}/WGtalenTarget
 
 ## Prereq parameters
 # REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
@@ -33,13 +43,9 @@ SAMPLENAME=VarYB
 # SAMPLENUM is the number of samples in this study
 SAMPLENUM=26
 
-## ThaRegGA parameters
-ThaRegGA_DIR=$(pwd)
-GIT_DIR="$(dirname "${ThaRegGA_DIR}")"
-TRegGA_DIR=${GIT_DIR}/TRegGA
-WGvarSNP_DIR=${GIT_DIR}/WGvarSNP_DIR
-WGvarINDEL_DIR=${GIT_DIR}/WGvarINDEL_DIR
-WGtalenTarget_DIR=${GIT_DIR}/WGtalenTarget
+## SNP_DIR for snp files in vcf format. 
+# vcf files are retrieved from SNP-Seek: http://oryzasnp.org/iric-portal/_variety.zul, then
+# SNPs are called using WGvarSNP workflow: https://github.com/huangc/WGvarSNP
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
 
 ## TRegGA parameters
