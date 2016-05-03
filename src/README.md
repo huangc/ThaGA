@@ -19,12 +19,11 @@ cd anaconda2
 # download the installer from https://www.continuum.io/downloads
 bash Anaconda2-4.0.0-Linux-x86_64.sh
 # Add anaconda2 to PATH
-echo '# added by Anaconda2 4.0.0 installer
+echo '# PATH added by anaconda2
 export PATH="/home/huangcy/src/anaconda2/bin:$PATH"
-' | cat ~/.bash_profile - > tmp && mv tmp ~/.bash_profile
-source ~/.bash_profile
+' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 # Add anaconda2 to PYTHONPATH
-echo '# added by anaconda2
+echo '# PYTHONPATH added by anaconda2
 export PYTHONPATH="$PYTHONPATH:/home/huangcy/src/anaconda2/lib/python2.7/site-packages"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 source ~/.bashrc
