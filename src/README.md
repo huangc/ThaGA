@@ -15,7 +15,7 @@ ThaRegGA is implemented as a collection of shell scripts and ancillary Python co
 For IU Mason cluster users, the prerequisite softwares can be loaded from the system:
 - module add blat/35
 
-### Install TRegGA
+### TRegGA
 * See https://github.com/huangc/TRegGA
 * Last update: April 2016
 * Step-by-step setup at: ${GIT_DIR}/TRegGA/TRegGA-Example.md
@@ -25,7 +25,7 @@ git clone https://github.com/huangc/TRegGA.git
 
 ```
 
-### Install WGvarSNP
+### WGvarSNP
 * See https://github.com/huangc/WGvarSNP
 * Last update: Feb. 2016
 ```bash
@@ -33,7 +33,7 @@ git clone https://github.com/huangc/WGvarSNP.git
 
 ```
 
-### Install WGtalenTarget
+### WGtalenTarget
 * See https://github.com/huangc/WGtalenTarget
 * Last update: April 2016
 ```bash
@@ -41,7 +41,7 @@ git clone https://github.com/huangc/WGtalenTarget.git
 
 ```
 
-### Install rice3k, author: Murat Öztürk
+### rice3k, author: Murat Öztürk
 * See https://github.com/muzcuk/rice3k
 * Last update: April 2016
 ```bash
@@ -96,14 +96,14 @@ source ~/.bashrc
 
 ```
 
-### Install Python Pyvcf package
+### Python package Pyvcf
 * See http://pyvcf.readthedocs.io/en/latest/
 ```bash
 pip install pyvcf
 
 ```
 
-### Install Python Biopython package
+### Python package Biopython
 * See http://biopython.org/wiki/Biopython
 ```bash
 pip install biopython
