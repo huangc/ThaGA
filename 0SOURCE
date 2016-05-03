@@ -11,6 +11,7 @@ data_DIR=${WORK_DIR}/data
 run_DIR=${WORK_DIR}/run
 scratch_DIR=${WORK_DIR}/scratch
 
+## Prereq parameters
 # REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
 # REFSEQ=OsjCHR.fa
 REFSEQ=OsjChr10.fa
@@ -31,6 +32,25 @@ SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8 GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHI
 SAMPLENAME=VarYB
 # SAMPLENUM is the number of samples in this study
 SAMPLENUM=26
+
+# ThaRegGA parameters
+ThaRegGA_DIR=$(pwd)
+GIT_DIR="$(dirname "${ThaRegGA_DIR}")"
+TRegGA_DIR=${GIT_DIR}/TRegGA
+WGvarSNP_DIR=${GIT_DIR}/WGvarSNP_DIR
+WGvarINDEL_DIR=${GIT_DIR}/WGvarINDEL_DIR
+WGtalenTarget_DIR=${GIT_DIR}/WGtalenTarget
+SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
+
+# TRegGA parameters
+CHECKONLY=no
+NUMPROC=30
+CULTIVAR='\"Zhengshan97\"'
+SYNONYM="ZHENGSHAN97"
+TARGET=OsjSWEET13
+REFERENCE=OsjCHR12
+FROM=17292001
+TO=17315000
 
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
@@ -87,6 +107,7 @@ GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number
 # takes about 90-100 hrs on Mason. Plan carefully for submitting the job. 
 # WALLTIME=120
 WALLTIME=24
-PPN=20
-VMEM=40
+VMEM=500
+PPN=30
+
 
