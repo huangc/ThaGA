@@ -1,6 +1,7 @@
 ## *src/* directory contains prerequisite softwares:
 - TRegGA
 - WGvarSNP
+- WGtalenTarget
 - rice3k
 - plink
 - Anaconda2
@@ -29,6 +30,14 @@ git clone https://github.com/huangc/TRegGA.git
 * Last update: Feb. 2016
 ```bash
 git clone https://github.com/huangc/WGvarSNP.git
+
+```
+
+### Install WGtalenTarget
+* See https://github.com/huangc/WGtalenTarget
+* Last update: April 2016
+```bash
+git clone https://github.com/huangc/WGtalenTarget.git
 
 ```
 
