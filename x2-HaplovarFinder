@@ -1,15 +1,21 @@
 #!/bin/bash
 
-#run for reference samples 
+##--------------------------
+# takes target FROM and TO positions, query cultivar's SNPs in vcf format as input, and generate a list of
+# cultivars from 3kRGP as close-relatives of the query cultivar based on the best matched SNP profile (haplovars) as output.
 
-for file in /DATA/GROUP/huangcy/Rice_3000_Assembly/VCF/*snp.vcf ;
-	do python2 identify.py $file >> reference.results;
+source ./0SOURCE
+
+# softlink vcf files
+cd ${rice3k_DIR}
+mkdir -p analysis/ThaRegGA
+cd analysis/ThaRegGA
+# ln -s ${SNP_DIR}/*snp.vcf .
+ln -s ${SNP_DIR}/gatk_ZHENGSHAN97_env_snp.vcf .
+
+# cultivar identification
+\rm ${SAMPLENAME}_Haplovar.results
+for file in *.vcf ;
+        do python2 ${rice3k_DIR}/scripts/identify.py ${PLINKFNAME} $file >> ${SAMPLENAME}_Haplovar.results;
 done
-   
 
-
-#run for unknown samples
-
-for file in /DATA/GROUP/huangcy/rice_genomes_BY/Illumina8/VCF/*snp.vcf ;
-	do python2 identify.py $file >> unknown.results;
-done
