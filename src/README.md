@@ -16,7 +16,8 @@ cd ${src_DIR}
 mkdir anaconda
 cd anaconda
 # download the installer from https://www.continuum.io/downloads
-bash Anaconda3-4.0.0-Linux-x86_64.sh
+# use PYTHON 2 instead of PYTHON 3 version to be compatible with the python codes in rice3k
+bash Anaconda2-4.0.0-Linux-x86_64.sh
 ```
 
 ### Blat
