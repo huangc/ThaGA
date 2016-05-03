@@ -14,11 +14,11 @@ For IU Mason cluster users, the prerequisite softwares can be loaded from the sy
 * Choose PYTHON 2 instead of PYTHON 3 version to be compatible with the python codes in rice3k.
 ```bash
 cd ${src_DIR}
-mkdir anaconda
-cd anaconda
+mkdir anaconda2
+cd anaconda2
 # download the installer from https://www.continuum.io/downloads
 bash Anaconda2-4.0.0-Linux-x86_64.sh
-# Add Anaconda to PYTHONPATH
+# Add anaconda2 to PYTHONPATH
 echo '# added by anaconda2
 export PYTHONPATH="$PYTHONPATH:/home/huangcy/src/anaconda2/lib/python2.7/site-packages"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
