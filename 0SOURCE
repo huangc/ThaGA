@@ -21,7 +21,7 @@ REFSEQNAME=OsjChr10
 # REFGFF is the gene annotation gff3 file for REFSEQ, retrieved by bin/xgetseq, and located in prereq/.
 REFGFF=OsjCHR.gff3
 
-# SAMPLE is a list of sample names. Each sample name should be only one word.
+## SAMPLE is a list of sample names. Each sample name should be only one word.
 SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8 GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A\
 2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 OSATIVA CHINGCHUNG NIAOYAO CHINGLIU"
 # SAMPLE="A2_257 BINIAPAN CHINGLIU GINMASARI KEYANUNIA KOTOOURA MANYALOJOPOIHUN NIPPONBARE PATIEROUGE ARC11571 CHINGCHUNG CR441 JC_\
@@ -33,7 +33,7 @@ SAMPLENAME=VarYB
 # SAMPLENUM is the number of samples in this study
 SAMPLENUM=26
 
-# ThaRegGA parameters
+## ThaRegGA parameters
 ThaRegGA_DIR=$(pwd)
 GIT_DIR="$(dirname "${ThaRegGA_DIR}")"
 TRegGA_DIR=${GIT_DIR}/TRegGA
@@ -42,7 +42,7 @@ WGvarINDEL_DIR=${GIT_DIR}/WGvarINDEL_DIR
 WGtalenTarget_DIR=${GIT_DIR}/WGtalenTarget
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
 
-# TRegGA parameters
+## TRegGA parameters
 CHECKONLY=no
 NUMPROC=30
 CULTIVAR='\"Zhengshan97\"'
@@ -51,6 +51,11 @@ TARGET=OsjSWEET13
 REFERENCE=OsjCHR12
 FROM=17292001
 TO=17315000
+
+## rice3k parameters
+# Plink file basename for the database
+PLINKFNAME=${rice3k_DIR}/data/NB-core_v4/NB-core_v4
+# PLINKFNAME=${rice3k_DIR}/data/3krg_filt_snp_v4/3krg_filt_snp_v4
 
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
