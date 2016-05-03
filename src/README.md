@@ -41,7 +41,7 @@ git clone https://github.com/huangc/WGtalenTarget.git
 
 ```
 
-### Install "rice3k", author: Murat Öztürk
+### Install rice3k, author: Murat Öztürk
 * See https://github.com/muzcuk/rice3k
 * Last update: April 2016
 ```bash
