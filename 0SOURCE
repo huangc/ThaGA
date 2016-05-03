@@ -21,8 +21,17 @@ REFSEQNAME=OsjChr10
 REFGFF=OsjCHR.gff3
 
 # SAMPLE is a list of sample names. Each sample name should be only one word.
+SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8 GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A\
+2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 OSATIVA CHINGCHUNG NIAOYAO CHINGLIU"
+# SAMPLE="A2_257 BINIAPAN CHINGLIU GINMASARI KEYANUNIA KOTOOURA MANYALOJOPOIHUN NIPPONBARE PATIEROUGE ARC11571 CHINGCHUNG CR441 JC_\
+157 KOTOBUKIMOCHI MADHUWAKARIA NIAOYAO OSATIVA SACHIKAZE"
 # SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
-SAMPLE="ZHENGSHAN97test"
+# SAMPLE="ZHENGSHAN97test ZHENGSHAN97test2"
+# SAMPLENAME is the collected sample name for reporting purpose, such as YB for all samples of YB1..YB8
+SAMPLENAME=VarYB
+# SAMPLENUM is the number of samples in this study
+SAMPLENUM=26
+
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
 # In order for the workflow to parse the contigs correctly, 
@@ -51,11 +60,22 @@ NUM_THREADS=4
 # GAPOPEN=4
 # GAPEXTEND=1
 
-## blat
+## To speed up blat, split samples into smaller parts and run blat in parallel
+# PARTS is the number of parts for sample splitting.
+PARTS=18
+
+## blat in x1-WGblat
 # Add blat directory to the PATH
 # export PATH=$PATH:${src_DIR}/blatSuite
 PERC_IDENTITY=99
 MIN_SCORE=250
+
+## blat in x3-WGtalen
+# The deletion site from reference sequence plus its surrounding GAP_BORDER size is retrieved for 
+# blat alignment against sample contig for evaluation of the pTALEN target site. 
+# The blat alignment result could be suboptimal depending on the deletion's site in contig or its size. 
+# Adjust PERC_IDENTITY_RET value to optimize the blat alignment, if needed.
+PERC_IDENTITY_RET=95
 
 ## filtering the blat indel results 
 GAP_MINNUM=1 #Minimal number of gaps, more than and including this number. Set to 1 to filter for alignment that has at least one gap.
@@ -67,6 +87,6 @@ GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number
 # takes about 90-100 hrs on Mason. Plan carefully for submitting the job. 
 # WALLTIME=120
 WALLTIME=24
-PPN=16
+PPN=20
 VMEM=40
 
