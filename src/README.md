@@ -18,6 +18,12 @@ mkdir anaconda
 cd anaconda
 # download the installer from https://www.continuum.io/downloads
 bash Anaconda2-4.0.0-Linux-x86_64.sh
+# Add Anaconda to PYTHONPATH
+echo '# added by anaconda2
+export PYTHONPATH="$PYTHONPATH:/home/huangcy/src/anaconda2/lib/python2.7/site-packages"
+' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
+source ~/.bashrc
+
 ```
 
 ### Blat
