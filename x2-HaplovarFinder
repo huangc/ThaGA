@@ -10,12 +10,12 @@ source ./0SOURCE
 cd ${rice3k_DIR}
 mkdir -p analysis/ThaRegGA
 cd analysis/ThaRegGA
-# ln -s ${SNP_DIR}/*snp.vcf .
-ln -s ${SNP_DIR}/gatk_ZHENGSHAN97_env_snp.vcf .
+for file in ${SAMPLE}
+    do ln -s ${SNP_DIR}/gatk_${file}_env_snp.vcf .
+done
 
 # cultivar identification
-\rm ${SAMPLENAME}_Haplovar.results
-for file in *.vcf ;
-        do python2 ${rice3k_DIR}/scripts/identify.py ${PLINKFNAME} $file >> ${SAMPLENAME}_Haplovar.results;
+for file in ${SAMPLE}
+    do python2 ${rice3k_DIR}/scripts/identify.py ${PLINKFNAME} gatk_${file}_env_snp.vcf > ${file}_Haplovar.results
 done
 
