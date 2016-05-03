@@ -11,12 +11,12 @@ For IU Mason cluster users, the prerequisite softwares can be loaded from the sy
 * See https://docs.continuum.io/anaconda
 * Last update: Apr. 2016
 * numpy, scipy, matplotlib and pandas are required python packages for /bin/DFPtree.py.
+* Choose PYTHON 2 instead of PYTHON 3 version to be compatible with the python codes in rice3k.
 ```bash
 cd ${src_DIR}
 mkdir anaconda
 cd anaconda
 # download the installer from https://www.continuum.io/downloads
-# use PYTHON 2 instead of PYTHON 3 version to be compatible with the python codes in rice3k
 bash Anaconda2-4.0.0-Linux-x86_64.sh
 ```
 
