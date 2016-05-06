@@ -11,8 +11,8 @@ source ./0SOURCE
 # of cultivar vcf against the SNP-Seek dataset.
 # It is critical to make sure the SNP position in vcf files is in the format of "1 2345"
 # as intersection of "OsjChr1 2345" and "1 2345" will not work apparently.
-# The WGvarSNP generates vcf files with OsjChr1 for chromosome1.
-# Change the CHR name from "OsjChr1" to "1" for vcf files.
+# The WGvarSNP generates vcf files with the format of OsjChr1 for chromosome1.
+# Change the chromosome name from "OsjChr1" to "1" for vcf files.
 
 cd ${findbySNP_DIR}
 mkdir -p run/ThaRegGA
