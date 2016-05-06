@@ -11,8 +11,8 @@ source ./0SOURCE
 # of cultivar vcf against the SNP-Seek dataset.
 # It is critical to make sure the SNP position in vcf files is in the format of "1 2345"
 # as intersection of "OsjChr1 2345" and "1 2345" will not work apparently.
-# The WGvarSNP generates vcf files with the format of OsjChr1 for chromosome1.
-# Change the chromosome name from "OsjChr1" to "1" for vcf files.
+# The WGvarSNP generates vcf files with OsjChr1 for chromosome1.
+# Change the CHR name from "OsjChr1" to "1" for vcf files.
 
 cd ${findbySNP_DIR}
 mkdir -p run/ThaRegGA
@@ -22,7 +22,7 @@ for file in ${SAMPLE}
     sed -i 's/^OsjChr//' gatk_${file}_env_snp.vcf
 done
 
-# Restrict SNPs to the target region defined by TARGET, REFERENCE, FROM, and TO in 0SOURCE, such as:
+# Restrict SNPs to the target region defined by TARGET, REFERENCE, FROM, and TO in 0SOURCE of TRegGA, such as:
 # TARGET=OsjSWEET13
 # REFERENCE=OsjCHR12
 # FROM=17292001
@@ -32,13 +32,17 @@ echo $REFERENCE > tmp
 REFERENCE=`sed 's/OsjCHR//' tmp`
 for file in ${SAMPLE}
 do
-grep -w "^$REFERENCE" gatk_${file}_env_snp.vcf > gatk_${file}_env_snp_$REFERENCE.vcf
-awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' gatk_${file}_env_snp_${REFERENCE}.vcf > gatk_${file}_env_snp_${TARGET}.vcf
+grep -w "^$REFERENCE" gatk_${file}_env_snp.vcf |\
+awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' > gatk_${file}_env_snp_${TARGET}.vcf
 done
 
 # cultivar identification
+# Choose from these two SNP-Seek database, definedin 0SOURCE
+# PLINKFNAME=${findbySNP_DIR}/data/NB-core_v4
+# PLINKFNAME=${findbySNP_DIR}/data/3krg_filt_snp_v4
+
 for file in ${SAMPLE}
-    do python2 ${findbySNP_DIR}/src/identify.py ${findbySNP_DIR}/data/NB-core_v4 gatk_${file}_env_snp_${TARGET}.vcf > gatk_${file}_env_snp_${TARGET}.haplovar
+    do python2 ${findbySNP_DIR}/src/identify.py ${PLINKFNAME} gatk_${file}_env_snp_${TARGET}.vcf > gatk_${file}_env_snp_${TARGET}.haplovar
 done
 
 # Report back to ThaRegGA
