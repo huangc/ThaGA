@@ -37,7 +37,7 @@ awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' > g
 done
 
 # cultivar identification
-# Choose from these two SNP-Seek database, definedin 0SOURCE
+# Choose from these two SNP-Seek databases, defined in 0SOURCE
 # PLINKFNAME=${findbySNP_DIR}/data/NB-core_v4
 # PLINKFNAME=${findbySNP_DIR}/data/3krg_filt_snp_v4
 
