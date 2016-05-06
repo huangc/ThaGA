@@ -7,15 +7,23 @@
 source ./0SOURCE
 
 # softlink vcf files
-cd ${rice3k_DIR}
-mkdir -p analysis/ThaRegGA
-cd analysis/ThaRegGA
+# For the findbySNP to work, it looks at the intersection of SNP positions
+# of cultivar vcf against the SNP-Seek dataset.
+# It is critical to make sure the SNP position in vcf files is in the format of "1 2345"
+# as intersection of "OsjChr1 2345" and "1 2345" will not work apparently.
+# The WGvarSNP generates vcf files with OsjChr1 for chromosome1.
+# Change the CHR name from "OsjChr1" to "1" for vcf files.
+
+cd ${findbySNP_DIR}
+mkdir -p run/ThaRegGA
+cd run/ThaRegGA
 for file in ${SAMPLE}
     do ln -s ${SNP_DIR}/gatk_${file}_env_snp.vcf .
+    sed -i 's/^OsjChr//' gatk_${file}_env_snp.vcf
 done
 
 # cultivar identification
 for file in ${SAMPLE}
-    do python2 ${rice3k_DIR}/scripts/identify.py ${PLINKFNAME} gatk_${file}_env_snp.vcf > ${file}_Haplovar.results
+    do python2 ${findbySNP_DIR}/src/identify.py ${findbySNP_DIR}/data/NB-core_v4 gatk_${file}_env_snp.vcf > gatk_${file}_env_snp.haplovar
 done
 
