@@ -22,8 +22,22 @@ for file in ${SAMPLE}
     sed -i 's/^OsjChr//' gatk_${file}_env_snp.vcf
 done
 
+# Restrict SNPs to the target region defined by TARGET, REFERENCE, FROM, and TO in 0SOURCE of TRegGA, such as:
+# TARGET=OsjSWEET13
+# REFERENCE=OsjCHR12
+# FROM=17292001
+# TO=17315000
+# Modify REFERENCE so that it is consistent with the SNP-Seek convention for chromosome name.
+echo $REFERENCE > tmp
+REFERENCE=`sed 's/OsjCHR//' tmp`
+for file in ${SAMPLE}
+do
+grep -w "^$REFERENCE" gatk_${file}_env_snp.vcf > gatk_${file}_env_snp_$REFERENCE.vcf
+awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' gatk_${file}_env_snp_${REFERENCE}.vcf > gatk_${file}_env_snp_${TARGET}.vcf
+done
+
 # cultivar identification
 for file in ${SAMPLE}
-    do python2 ${findbySNP_DIR}/src/identify.py ${findbySNP_DIR}/data/NB-core_v4 gatk_${file}_env_snp.vcf > gatk_${file}_env_snp.haplovar
+    do python2 ${findbySNP_DIR}/src/identify.py ${findbySNP_DIR}/data/NB-core_v4 gatk_${file}_env_snp_${TARGET}.vcf > gatk_${file}_env_snp_${TARGET}.haplovar
 done
 
