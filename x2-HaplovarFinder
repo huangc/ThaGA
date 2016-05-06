@@ -41,3 +41,6 @@ for file in ${SAMPLE}
     do python2 ${findbySNP_DIR}/src/identify.py ${findbySNP_DIR}/data/NB-core_v4 gatk_${file}_env_snp_${TARGET}.vcf > gatk_${file}_env_snp_${TARGET}.haplovar
 done
 
+# Report back to ThaRegGA
+\cp *.haplovar ${TRegGA_DIR)/run
+
