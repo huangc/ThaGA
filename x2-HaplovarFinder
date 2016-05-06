@@ -22,7 +22,7 @@ for file in ${SAMPLE}
     sed -i 's/^OsjChr//' gatk_${file}_env_snp.vcf
 done
 
-# Restrict SNPs to the target region defined by TARGET, REFERENCE, FROM, and TO in 0SOURCE of TRegGA, such as:
+# Restrict SNPs to the target region defined by TARGET, REFERENCE, FROM, and TO in 0SOURCE, such as:
 # TARGET=OsjSWEET13
 # REFERENCE=OsjCHR12
 # FROM=17292001
