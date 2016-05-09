@@ -20,6 +20,12 @@ mkdir -p ${WORK_DIR}/data
 mkdir -p ${WORK_DIR}/run
 mkdir -p ${WORK_DIR}/scratch
 
+# Add ${bin_DIR} to PYTHONPATH
+echo '# added by ThaRegGA
+export PYTHONPATH="$PYTHONPATH:${bin_DIR}"
+' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
+source ~/.bashrc
+
 ## Prepare for the SOAPdenovo2-assembled sample contigs.
 # Note: the contigs have been assembled previously using TRegGA workflow, and we are just linking those contig files here.
 cd ${prereq_DIR}
@@ -41,6 +47,11 @@ cd ${prereq_DIR}
 
 # Retrieve and index the reference sequence for Blast
 sh ${bin_DIR}/xgetseq
+
+# Retrieve SNP-Seek datasets: NB-core_v4 and 3krg_filt_snp_v4
+cd ${prereq_DIR}
+make -f Makefile-SNP-Seek
+
 " > prereq-on-${REFSEQNAME}.qsub
 qsub prereq-on-${REFSEQNAME}.qsub
 
