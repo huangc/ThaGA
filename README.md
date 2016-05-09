@@ -6,9 +6,6 @@ Reference guided (rfguided) assembly of target sequence using tools such as TReg
 
 ## Workflow prerequisite:
 1. TRegGA: https://github.com/huangc/TRegGA
-2. WGvarSNP: https://github.com/huangc/WGvarSNP
-3. findbySNP: https://github.com/huangc/findbySNP
-4. WGtargetTalen: https://github.com/huangc/WGtalenTarget
 
 ## Workflow description:
 1. Identfy haplovars to the sample with regards to the region of interest on the reference genome.
