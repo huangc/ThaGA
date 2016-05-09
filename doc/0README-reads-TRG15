@@ -1,0 +1,95 @@
+
+## List of potentially interesting rice cultivars for validating the TRegGA workflow
+
+##---------------------------------
+# Cultivars for Xa25 resistance study [1]
+# CX133	    Zhengshan97	 Indica	Note: one nt deletion in TALE binding site; XA25 resistant (Xa25)
+# CX151	    AZUCENA	 Tropical_japonica   Note: same as 93-11; XA25 susceptible (xa25)
+##--------------------------------
+# [1] Azucena and Zhenshan 97 contain alleles of OsSWEET13, termed xa25 and Xa25, respectively, which differ in their promoter sequences by an additional nucleotide
+# [1] Richter A, et al. A TAL effector repeat architecture for frameshift binding. Nat Commun. 2014 Mar 11;5:3447.
+
+##---------------------------------
+# Cultivars that are Xoo resistant
+# IRIS 313-10605 DV86	 Aus/boro  Note: [2][4] Xa7;Xa5
+# CX126		 IRBB60	 Indica	   Note: [3][4] Xa4;xa5;xa13;Xa21
+# CX44		 IR58025B	   Indica	Note: [3][4] Xa4;xa5;xa13;Xa21
+##--------------------------------
+# [2] Xia Chun, Chen H, Zhu X. Identification, Mapping, Isolation of the Genes Resisting to Bacterial Blight and Breeding Application in Rice. Molecular Plant Breeding. 2012;3(12)121-131.
+# [3] Khan, MueenAlam. Molecular breeding of rice for improved disease resistance, a review. Australasian Plant Pathology. 2015 May 1;44(3):273-282.
+# [4] Iyer AS, McCouch SR. The rice bacterial blight resistance gene xa5 encodes a novel form of disease resistance. Mol Plant Microbe Interact. 2004 Dec;17(12):1348-54. 
+
+##-----------------------------------
+# Cultivar for leucine-rich repeat receptor kinase (LRK) gene cluster
+# CX145	   Minghui 63	    Indica	   Note: [5] LRK1-plus (93-11 is LRK1-minus)
+##------------------------------------
+# [5] He G, et al. Haplotype variation in structure a-nd expression of a gene cluster associated with a quantitative trait locus for improved yield in rice. Genome Res. 2006 May;16(5):618-26.
+# The full name "Minghui 63" would not work due to the space in between name, so modify it to Minghui63 as the name.
+
+
+
+## Test cultivar examples Zhengshan97 (for Xa25) and DV86 (for Xa5)
+##----------------------------------
+#1. Copy and modify the xgetreads to have a tab included at the end of $cultivar
+cd /home/huangcy/TRegGA_CY/prj_TRG15/reads
+\cp /home/TRegGA/prj/reads/xgetreads xgetreads_orig
+\cp /home/TRegGA/prj/reads/xgetreads .
+# modify xgetreads as follows
+# sample=`grep -P "$cultivar\t" *tsv | cut -d"    " -f1`
+
+
+#2. Copy the following files
+\cp /home/TRegGA/prj/reads/rice_line_metadata_20140521.tsv .
+\cp /home/TRegGA/prj/reads/seq_file_mapping_to_SRA.txt .
+
+
+#3. Copy Makefile_GPR-orig
+\cp /home/TRegGA/TRegGA/reads/Makefile_GPR-orig Makefile_GPR-orig_orig
+\cp /home/TRegGA/TRegGA/reads/Makefile_GPR-orig .
+
+# Modify Makefile_GPR-orig on the TRIMMOMATIC_STEPS
+# TRIMMOMATIC_STEPS =  LEADING:${TMO-m} SLIDINGWINDOW:${TMO-w}:${TMO-m} TRAILING:${TMO-m} MINLEN:${TMO-l}
+# Modify Makefile_GPR-orig on the TRegGA_DIR 
+# TRegGA_DIR        = /home/huangcy/TRegGA_CY/prj_TRG15
+
+
+#4. Prepare Makefile_GPR-orig for cultivar Zhengshan97
+# 
+CULTIVAR="Zhengshan97"
+\mkdir ${CULTIVAR}
+
+# Run xgetreads for each cultivar
+sh xgetreads ${CULTIVAR} > ins_${CULTIVAR}
+\mv ins_${CULTIVAR} ${CULTIVAR}
+
+# Copy the Makefile_GPR-orig to each cultivar directory and modify "LABEL" to each cultivar name
+\cp Makefile_GPR-orig ${CULTIVAR}/Makefile_GPR-${CULTIVAR}
+sed -i -e "s/LABEL/${CULTIVAR}/g" ${CULTIVAR}/Makefile_GPR-${CULTIVAR}
+
+# Edit the Makefile to update the SAMPLE and ACCESSIONS according to its corresponding ins_${CULTIVAR} file
+
+
+#5. run Makefile_GPR-${CULTIVAR} for each cultivar
+# Check for any problem before real run
+make -n -f Makefile_GPR-${CULTIVAR}
+
+# run Makefile_GPR-${CULTIVAR} with timing
+time make -j 4 -f Makefile_GPR-${CULTIVAR} >& err
+
+# record the time after the job is finished
+echo "
+real    xxmxx.xxxs
+user    xxmxx.xxxs
+sys     xxmxx.xxxs
+" >> err
+
+
+#6. Clean up:
+#
+make -f Makefile_GPR-${CULTIVAR} cleanup
+
+
+#7. Repeat steps 4-6 for cultivar DV86
+# set CULTIVAR="DV86", then run steps 4-6, or alternatively
+# Makefile_GPR-DV86 had been executed previously, so simply link it to here
+ln -s /home/TRegGA/prj/reads/DV86 .
