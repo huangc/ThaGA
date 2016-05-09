@@ -53,9 +53,9 @@ FROM=17292001
 TO=17315000
 
 ## Plink parameters
-# Plink file basename for the database
-PLINKFNAME=${prereq_DIR}/NB-core_v4
-# PLINKFNAME=${prereq_DIR}/3krg_filt_snp_v4
+# Plink file basename for the database. Choose from these two SNP-Seek databases in ${prereq_DIR}
+# PLINKFNAME=NB-core_v4
+PLINKFNAME=3krg_filt_snp_v4
 
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
