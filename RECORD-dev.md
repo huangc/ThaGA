@@ -23,15 +23,18 @@
 * So we have total of five anchors in this 58Kb Xa7QTL.
 * use 5 Kb and  more on left and right of M5..M5_56K for rfguided assembly; chr6:27960001..28023000, 63 Kb.
 
-
-## Xa7 study with ThaRegGA
+#### Xa7 study with ThaRegGA
 * 1. Xa7 related cultivars
 ```bash
 cd ${TRegGA_DIR}
 
 
-
 ```
+
+
+
+
+
 
 ## REFERENCE:
 * [2] Xia Chun, Chen H, Zhu X. Identification, Mapping, Isolation of the Genes Resisting to Bacterial Blight and Breeding Application in Rice. Molecular Plant Breeding. 2012;3(12)121-131.
