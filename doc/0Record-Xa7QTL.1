@@ -1,0 +1,46 @@
+
+##--------------------Description of Excel Table----------------------------------------------
+
+I. Genome Region: (Coordinates are local to the retrieved sequences).
+1. OsjapChr6_M5-M5_56K: Oryza_sativa.IRGSP-1.0.26 [1] chr6, M5 to M5_56K region
+2. Osind9311Chr6_M5-M5_56K: Oryza_indica.ASM465v1.26 [2], chr6, M5 to M5_56K region
+3. Osind9311Chr6_M5-M5_56K_Noinsert: As Osind9311Chr6_M5-M5_56K, with the 80Kb artifact insert region removed and its flanking regions placed directly next to each other.
+4. Osindir64_scaffold95, Osindir64_contig018306, Osindir64_scaffold499: scaffolds and contigs in Osindir64 [3] that are found to contain Anchor proteins using GenomeThreader.
+5. Osindaba447, Osindzba490: sequence regions related to Xa7QTL loci from indica cultivar OSIABa sequenced using PacBio (obtained from Dr.Jianwei Zhang and Dr. Rod Wing, Ariziona, 3/2/2015)
+6. Osindirbb7_62K: 62kb cosmid sequence containing IRBB7 Xa7QTL region from Dr. Bing Yang, 2/5/2014.
+
+II. DNA Markers:
+1. M5 (1,219 bp) and M5_56K (1,745 bp) are markers that define a 56 kb Xa7 QTL region in rice japonica. M5 and M5_56K are provided by Dr. Bing Yang, 1/20/2015.
+	a. M5-M5_56K in rice japonica: chr6:27,965,437..28,022,337, Length=56,901 bp. The M5-M5_58K region was retrieved as chr6:27,965,001..28,023,000, Length=58,000 bp
+	b. M5-M5_56K in rice indica: chr6:29,683,358..29,828,354, Length=144,997 bp. The M5-M5_56K region was retrieved as chr6:29,683,001..29,829,000, Length=146,000 bp.
+2. LeftFlank1000 and RightFlank1000: upstream and downstream 1,000 bp flank region of an artifact insert region chr6:29,704,162..29,783,684 (79,523 bp) inside the M5-M5_56K of indica_9311 reference genome. The artifact insert region has the following features and requires validation for being a true rice sequence:
+	a. No indica reads from 93-11 [3] as well as five other indica cultivars (IRBB7, DV86, CX156, CX162, DaNuo) from 3,000 Rice Genome Project [4] were able to align to this region.
+	b. Blast results of this region identified mostly plant bacterial origined tRNAs and rRNAs.
+	c. Annotation of genes in this region are mostly bacterial origined tRNAs and rRNAs.
+3. Anchor Proteins: Anchor proteins are canonical protein-coding genes residing inside the Xa7QTL M5-M5_56K region in both japonica and indica reference genomes. Seven genes are identified within the M5-M5_56K region using GenomeThreader: OS06G0673700, OS06G0674000, OS06G0674100, OS06G0674400, OS06G0674800, OS06G0675200, OS06G0675300.
+
+III. Analysis
+1. DNA markers (M5, M5_56K, LeftFlank1000, RightFlank1000 are located in the genome regions using Blastn
+2. Anchor proteins are located in the genome regions using GenomeThreader [5].
+
+V. Summary
+1. The Gth identified seven protein-coding genes in the Xa7QTL M5-M5_56K region, which appear to largely maintain conservation across japonica and indica cultivars in terms of gene structure and order (synteny), with the following observations:
+OS06T0673700: IRBB7 contains 3 extra nucleotides, but the protein size predicted to remain the same (125 aa).
+OS06T0674000: IRBB7 contains 6 extra nucleotides, but the protein size predicted to remain the same (409 aa).
+OS06T0674100: variation in gene length, but the protein size predicted to remain the same (152 aa)
+OS06T0674400: two versions: 333 bp (Osjap, Osindir64, Osindzba490) and 337 bp (Osind9311, Osindaba447), but the protein size predicted to remain the same (111 aa).
+OS06T0674800: protein size predicted to remain the same (449 aa)
+OS06T0675200: protein size predicted to remain the same (413 aa)
+OS06T0675300: protein size predicted to remain the same (389 aa)
+
+2. Blastn analysis indicates that the flank regions from indica, which sit next to each other, are not close to each other in japonica (18 Kb) or any other tested genome regions, such as 84 Kb in Osindir64_scaffold499, 542 Kb in Osindaba447. The RightFlank1000 region was found to map to several other places in the tested genome sequences, so is the right flanking region up to 4 Kb. Consequently, we could not find support for the initial hypothesis that the flank regions were close in distance (within 2,000 bp in our analysis) to each other once the artifact insert was removed.
+
+3. The IRBB7 Osindirbb7_62K covers OS06T0674000, but not other anchor proteins or marker DNAs. Osindirbb7_62K matches to M5 marker only partially (28% of M5 marker, 1219 bp), but should have matches more anchor proteins (such as OS06T0674100 and OS06T0674400) based on the length of the sequence. It is possible that Osindirbb7_62K a paralog rather than the real Xa7QTL region.
+
+
+REFERENCE:
+[1] International Rice Genome Sequencing Project. The map-based sequence of the rice genome. Nature. 2005 Aug 11;436(7052):793-800.
+[2] Yu J, et al. A draft sequence of the rice genome (Oryza sativa L. ssp. indica). Science. 2002 Apr 5;296(5565):79-92.
+[3] Schatz MC, et al. Whole genome de novo assemblies of three divergent strains of rice, Oryza sativa, document novel gene space of aus and indica. Genome Biol. 2014;15(11):506.
+[4] 3,000 rice genomes project. The 3,000 rice genomes project. Gigascience. 2014 May 28;3:7.
+[5] Gremme, G., Brendel, V., Sparks, M. E. & Kurtz, S. Engineering a software tool for gene structure prediction in higher organisms. Inform. Software Technol. 47, 965–978 (2005). 
