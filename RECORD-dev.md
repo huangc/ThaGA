@@ -7,9 +7,9 @@
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
 
 ## Cultivars that are Xoo resistant
-#### IRIS 313-10605 DV86    Aus/boro  Note: [2][4] Xa7;Xa5
-#### CX126          IRBB60  Indica    Note: [3][4] Xa4;xa5;xa13;Xa21
-#### CX44           IR58025B          Indica       Note: [3][4] Xa4;xa5;xa13;Xa21
+* IRIS 313-10605 DV86    Aus/boro  Note: [2][4] Xa7;Xa5
+* CX126          IRBB60  Indica    Note: [3][4] Xa4;xa5;xa13;Xa21
+* CX44           IR58025B          Indica       Note: [3][4] Xa4;xa5;xa13;Xa21
 
 ## Agenda of ThaRegGA application on finding Xa7 gene.
 #### Xa7 Target region:
