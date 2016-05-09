@@ -13,13 +13,9 @@ scratch_DIR=${WORK_DIR}/scratch
 
 ## Local Github repositiries:
 # Local github root GIT_DIR is assumed to be parent of ThaRegGA_DIR
-ThaRegGA_DIR=$(pwd)
 GIT_DIR="$(dirname "${ThaRegGA_DIR}")"
+ThaRegGA_DIR=$(pwd)
 TRegGA_DIR=${GIT_DIR}/TRegGA
-rice3k_DIR=${GIT_DIR}/rice3k
-WGvarSNP_DIR=${GIT_DIR}/WGvarSNP_DIR
-WGvarINDEL_DIR=${GIT_DIR}/WGvarINDEL_DIR
-WGtalenTarget_DIR=${GIT_DIR}/WGtalenTarget
 
 ## Prereq parameters
 # REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
@@ -42,7 +38,7 @@ SAMPLENUM=1
 
 ## SNP_DIR for snp files in vcf format. 
 # vcf files are retrieved from SNP-Seek: http://oryzasnp.org/iric-portal/_variety.zul, then
-# SNPs are called using WGvarSNP workflow: https://github.com/huangc/WGvarSNP
+# SNPs are called using WGvarSNP workflow
 # snp files have this extention: *_env_snp.vcf
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
 
@@ -56,10 +52,10 @@ REFERENCE=OsjCHR12
 FROM=17292001
 TO=17315000
 
-## rice3k parameters
+## Plink parameters
 # Plink file basename for the database
-PLINKFNAME=${rice3k_DIR}/data/NB-core_v4/NB-core_v4
-# PLINKFNAME=${rice3k_DIR}/data/3krg_filt_snp_v4/3krg_filt_snp_v4
+PLINKFNAME=${prereq_DIR}/NB-core_v4
+# PLINKFNAME=${prereq_DIR}/3krg_filt_snp_v4
 
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
