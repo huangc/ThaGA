@@ -8,9 +8,10 @@ module add python
 
 ## Aim: Find Deletion Fingerprints (DFP), which is defined as a set of deletions of the assembled contigs when compared to the reference genome. 
 #  The deletions are further restricted to the genic region (giloci) with the minimal length GAP_MINSIZE_FP in order to reduce the noise 
-#  from sequencing/assembly errors on repetitive and low complexity regions.
+#  from sequencing/assembly errors on repetitive and low complexity regions. 
 
 # Shared DFPs are defined as DFPs that have the exact same deletion start and end positions on the reference genome.
+# Only DFPs that are shared by at lease two samples are used in computing distance matrix.
 # Sample DFP vector is a binary vector of sample that represents the prsence/absence of each accounted DFPs from all samples in comparison.
 # The DFP distance between sample i and j is defined as the Hamming distance of the sample DFP vector i and j, 
 # divided by the total number of accounted DFPs from all samples in comparison. 
@@ -72,11 +73,13 @@ awk -v gap_minsize="${GAP_MINSIZE_FP}" -v gap_maxsize="${GAP_MAXSIZE_FP}" '{ OFS
 # step4: if delStart > beforeLocusEnd && delEnd < afterLocusStart, write this to iiLOCUS.del
 #        else if delStart < beforeLocusEnd, write the beforeLocusName and deletion record to iLOCUS.del
 #        else if delEnd > afterLocusStart, write the afterLocusName and deletion record to iLOCUS.del
-
 # Below is an example of merged iLOCI.table and neighboring deletion sites
 # OsjChr10 5779856 5790347 locus7372
 # OsjChr10 5789870 246 YB1;YB5;YB6;YB7;YB8;
 # OsjChr10 5793555 5796914 locus7373
+
+# Latly, we care only DFPs that are shared by at least two samples for computing the distance matrix. 
+# So we remove deletions that have only one sample.
 
 \rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
 \rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI
@@ -138,8 +141,13 @@ echo "Tname tGapStart tGapSize tGapEnd Samples iloci" |\
  cat - Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci > Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI
 
 grep -v "intergenic" Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci | grep -v "unknown" > Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci
-grep -v "intergenic" Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI | grep -v "unknown" > Seq.t_sum_Lg${GAP_MINSIZE_FP}.gILOCI
 
+# Remove deletions that have only one sample.
+\cp Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci Seq.t_sum_Lg${GAP_MINSIZE_FP}_orig.giloci 
+awk -F\; '{ if (NF>2) {print $0} }' Seq.t_sum_Lg${GAP_MINSIZE_FP}_orig.giloci > Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci
+
+echo "Tname tGapStart tGapSize tGapEnd Samples iloci" |\
+ cat - Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci > Seq.t_sum_Lg${GAP_MINSIZE_FP}.gILOCI
 
 #5. Input is file Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci with the content such as:
 # Tname tGapStart tGapSize tGapEnd Samples iloci
