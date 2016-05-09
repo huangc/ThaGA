@@ -17,10 +17,10 @@
 * 1. M5_M5-56K in rice japonica is chr6:27,965,437..28,022,337, Length=56,901 bp.
 * 2. M5_M5-56K in rice japonica is redefined as chr6:27,965,001..28,023,000, Length=58,000 bp.
 * 3. M5_M5-56K in rice indica is chr6:29,683,670..29,828,319, Length=144,650 bp.
-* 4. M5_M5-56K in rice indica is redefined to chr6:29,683,001..29,829,000, Length=146,000 bp.
-* 6. M5_M5-56K in rice indica, after removing the artifact insert, Length=66,477 bp.
+* 5. M5_M5-56K in rice indica, after removing the artifact insert, Length=66,477 bp.
   * Artifact insert region in indica is chr6:29,704,162..29,783,684, Length=79,523 bp.
   * Gene annotations are all re-coordinated to start from position 1.
+* 4. M5_M5-56K in rice indica is redefined to chr6:29,683,001..29,829,000, Length=146,000 bp.
 
 
 * Seven protein-coding genes are included in this region. They will be used as anchors to clarify the shifting regions such as the 17kb region defined in LeftFlank and RightFlank.
