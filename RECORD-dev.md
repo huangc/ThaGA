@@ -6,12 +6,11 @@ st reference using denovo assembled superscaffolds from haplovars (manually sele
 2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
 
-##---------------------------------
 # Cultivars that are Xoo resistant
 # IRIS 313-10605 DV86    Aus/boro  Note: [2][4] Xa7;Xa5
 # CX126          IRBB60  Indica    Note: [3][4] Xa4;xa5;xa13;Xa21
 # CX44           IR58025B          Indica       Note: [3][4] Xa4;xa5;xa13;Xa21
-##--------------------------------
+
 # [2] Xia Chun, Chen H, Zhu X. Identification, Mapping, Isolation of the Genes Resisting to Bacterial Blight and Breeding Application in Rice.
 # Molecular Plant Breeding. 2012;3(12)121-131.
 # [3] Khan, MueenAlam. Molecular breeding of rice for improved disease resistance, a review. Australasian Plant Pathology. 2015 May 1;44(3):273-282.
