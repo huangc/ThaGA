@@ -1,8 +1,5 @@
 ## *src/* directory contains prerequisite softwares:
 - TRegGA
-- WGvarSNP
-- WGtalenTarget
-- rice3k
 - plink
 - Anaconda2
 - Python package Pyvcf
@@ -22,42 +19,6 @@ For IU Mason cluster users, the prerequisite softwares can be loaded from the sy
 ```bash
 cd ${GIT_DIR}
 git clone https://github.com/huangc/TRegGA.git
-
-```
-
-### WGvarSNP
-* See https://github.com/huangc/WGvarSNP
-* Last update: Feb. 2016
-```bash
-git clone https://github.com/huangc/WGvarSNP.git
-
-```
-
-### WGtalenTarget
-* See https://github.com/huangc/WGtalenTarget
-* Last update: April 2016
-```bash
-git clone https://github.com/huangc/WGtalenTarget.git
-
-```
-
-### rice3k 
-* Author: Murat Öztürk
-* See https://github.com/muzcuk/rice3k
-* Last update: April 2016
-```bash
-cd ${GIT_DIR}
-git clone https://github.com/muzcuk/rice3k.git
-# Retrieve reference genome sequence and annotation
-# Retrieve SNP-Seek datasets: NB-core_v4 and 3krg_filt_snp_v4
-# If SNPs in the coding region is needed, run Makefile inside /NB-core_v4 and /3krg_filt_snp_v4.
-cd ${rice3k_DIR}/data/
-make -f Makefile
-# Add rice3k/scripts to PYTHONPATH
-echo '# added by rice3k
-export PYTHONPATH="$PYTHONPATH:/projects/huangcy/MYGIT/rice3k/scripts"
-' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
-source ~/.bashrc
 
 ```
 
