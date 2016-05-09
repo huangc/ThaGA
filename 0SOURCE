@@ -16,6 +16,9 @@ scratch_DIR=${WORK_DIR}/scratch
 GIT_DIR="$(dirname "${ThaRegGA_DIR}")"
 ThaRegGA_DIR=$(pwd)
 TRegGA_DIR=${GIT_DIR}/TRegGA
+# TRegGA_DIR=/N/dc2/projects/brendelgroup/TRegGA/prj
+# TRegGA_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1
+# TRegGA_DIR=/home/huangcy/MYWORK/TRegGA
 
 ## Prereq parameters
 # REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
