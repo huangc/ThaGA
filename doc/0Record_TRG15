@@ -1,0 +1,257 @@
+# Aim: To assembly the Xa7QTL region of IRBB7/DV86/IRBB62 using Aus DJ123 as its reference.
+
+##------------------
+
+#1 Retrieve the Aus reference DJ123 from 
+ 
+cd ${TRegGA_DIR}/reads
+source TRegGA.source
+
+CULTIVAR="93-11"
+SYNONYM="93-11"
+SAMPLE="SRR933"
+ACCESSIONS="SRR933669"
+
+mkdir ${SYNONYM}
+\cp Makefile_GPR-orig ${SYNONYM}/Makefile_GPR-${SYNONYM}
+sed -i -r -e "s/SOURCE            = ebisra/#SOURCE            = ebisra/" \
+	  -e "s/#SOURCE            = ncbisra/SOURCE            = ncbisra/" \
+	  -e "s/SAMPLE            = SRR933/SAMPLE            = ${SAMPLE}/" \
+          -e "s/SYNONYM           = LABEL/SYNONYM           = ${SYNONYM}/" \
+          -e "s/ACCESSIONS        = SRR933669/ACCESSIONS        = ${ACCESSIONS}/" \
+          -e "s/#ILLUMINACLIP      = ILLUMINACLIP/ILLUMINACLIP      = ILLUMINACLIP/" \
+          -e "s/ILLUMINACLIP      = #/#ILLUMINACLIP      = #/" \
+          -e "s/TMO-l      =                         40/TMO-l      =                         50/" \
+	      ${SYNONYM}/Makefile_GPR-${SYNONYM}
+
+# generate the qsub file for the makefile
+
+echo "
+#!/bin/bash
+#PBS -m abe
+#PBS -l nodes=1:ppn=32,vmem=240gb,walltime=08:00:00
+#PBS -M huangcy@indiana.edu
+#PBS -N Makefile_GPR-${SYNONYM}
+#PBS -j oe
+
+module add bowtie/1.1.1
+module add bowtie2/2.2.3
+module add bwa/0.7.6a
+module add java
+module add python
+module add R
+module add ngsutils
+module add samtools
+module add soapdenovo2
+
+cd ${TRegGA_DIR}/reads/${SYNONYM}
+make -j 16 -f Makefile_GPR-${SYNONYM} >& err
+" > ${SYNONYM}/Makefile_GPR-${SYNONYM}.qsub
+
+
+# qsub the makefiles
+cd ${TRegGA}/reads
+qsub ${SYNONYM}/Makefile_GPR-${SYNONYM}.qsub
+
+# 93-11 Reads preparation was done by VB @ 8/25/2015 on gnomic.soic.indiana.edu
+# soft link the results here
+cd /N/dc2/projects/brendelgroup/TRegGA/TRegGA/reads
+ln -s /N/dc2/projects/brendelgroup/TRegGA/prj/reads/93-11 .
+
+
+##------------------------
+#2 run the de novo assembly part of Makefile_TRegGA-orig
+# generate the qsub file for the makefiles
+
+cd ${TRegGA_DIR}
+make CHECKONLY=no NUMPROC=30 CULTIVAR=${CULTIVAR} SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/assembly/denovo/${SYNONYM}/\
+${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa
+
+# cd ${TRegGA_DIR}/assembly/denovo
+# sh 0Record-${SYNONYM}
+
+cd ${TRegGA_DIR}/assembly/denovo/${SYNONYM}
+
+echo "
+#!/bin/bash
+#PBS -m abe
+#PBS -l nodes=1:ppn=32,vmem=240gb,walltime=24:00:00
+#PBS -N Makefile_denovo_${SYNONYM}
+#PBS -j oe
+
+module add bowtie/1.1.1
+module add bowtie2/2.2.3
+module add bwa/0.7.6a
+module add java
+module add python
+module add R
+module add ngsutils
+module add samtools
+module add soapdenovo2
+
+cd ${TRegGA_DIR}/assembly/denovo/${SYNONYM}
+make -j 30 -f Makefile_denovo_${SYNONYM}
+" > Makefile_denovo_${SYNONYM}.qsub
+
+
+# qsub the makefiles
+for i in {1..8}
+do
+cd ${TRegGA_DIR}/assembly/denovo/${SYNONYM}
+qsub Makefile_denovo_${SYNONYM}.qsub >& err_${SYNONYM}
+done
+
+
+# denovo was done by VB @ 8/25/2015 on gnomic.soic.indiana.edu
+# link the results here
+cd /N/dc2/projects/brendelgroup/TRegGA/TRegGA/assembly/denovo
+ln -s /N/dc2/projects/brendelgroup/TRegGA/prj/assembly/denovo/93-11 . 
+
+
+##--------------------------
+#3 prepare targets for the rfguided assembly
+#1) Sub1 region (Xu et al., 2006 (Nature)) 
+#[1] Xu K, Xu X, Fukao T, Canlas P, Maghirang-Rodriguez R, Heuer S, Ismail AM, Bailey-Serres J, Ronald PC, Mackill DJ. Sub1A is an ethylene-response-factor-like gene that confers submergence tolerance to rice. Nature. 2006 Aug 10;442(7103):705-8.
+
+#31 Sub1 at Nipponbare
+#Nipponbare Chr9:6228084-6453211 (225 kb)
+#
+#Gene: OS09G0287000 (Sub1B)
+#Description AP2/ERF domain protein; Ethylene responsive protein-like; Os09g0287000 protein; cDNA clone:001-206-F09, full insert sequence; cDNA clone:J013163J01, full insert sequence [Source:UniProtKB/TrEMBL;Acc:Q6EN65]
+#Location Chromosome 9: 6,404,482-6,406,039 reverse strand. (1,557 bp)
+#About this gene This gene has 1 transcript (splice variant), 13 orthologues and 35 paralogues.
+#
+#Gene: OS09G0286600 (Sub1C)
+#Description Os09g0286600 protein [Source:UniProtKB/TrEMBL;Acc:Q0J2X0]
+#Location Chromosome 9: 6,387,891-6,389,789 reverse strand. (1,898 bp)
+#About this gene This gene has 3 transcripts (splice variants), 10 orthologues and 35 paralogues.
+#
+#TRegGA-TR: Nipponbare Chr9:6228084-6453211 (225,127 bp)
+#TRegGA-CY: Nipponbare Chr9:6253001-6453000 (200,000 bp)
+
+#32 Sub1 at Indica
+# makeblastdb -in ${TARGET_SEQNAME}.fasta -dbtype nucl -out TRGT -parse_seqids; \
+# blastn -db TRGT -query ${SYNONYM}-${TARGET_SEQNAME}.fa -outfmt 6 > blastn.out
+
+TRegGA_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA
+cd ${TRegGA_DIR}/targets
+# Blastn against OsiDNA
+REF=OsiChr9
+TARGET_SEQNAME=Sub1
+blastn -db ${TRegGA_DIR}/reference/rice_indica/OsiDNA -query ${TARGET_SEQNAME}.fasta -outfmt 6 > blastn_OsiDNA_${TARGET_SEQNAME}
+grep "${REF}" blastn_OsiDNA_${TARGET_SEQNAME} > blastn_${REF}_${TARGET_SEQNAME}
+sort -k 4,4 -r -n blastn_${REF}_${TARGET_SEQNAME} > blastn_${REF}_${TARGET_SEQNAME}.sort
+# Result
+# Sub1.0  OsiCHR9 99.03   12301   66      14      1       12287   5791824 5804085 0.0     22007
+# Sub1.0  OsiCHR9 90.30   2681    200     26      197351  199999  6030228 6027576 0.0      3456
+
+# Retrieve Sub1 sequence from OsiDNA chr9:5791824-6027577 (235,753 bp)
+python getTarget.py OsiCHR9.embl OsiSub1 5791824 6027577
+
+# Blastn Sub1 between Japonica and Indica
+makeblastdb -in ${TARGET_SEQNAME}.fasta -dbtype nucl -out Osj${TARGET_SEQNAME} -parse_seqids
+blastn -db Osj${TARGET_SEQNAME} -query Osi${TARGET_SEQNAME}.fasta -outfmt 6 > blastn_Osj${TARGET_SEQNAME}_Osi${TARGET_SEQNAME}
+
+
+#
+#2) TPP7/qAG-9-2/T6P region (Fretzschmar et al., 2015)
+#Gene: TPP7 OS09G0369400
+#
+#33 TPP7 at Nipponbare
+#Description probable trehalose-phosphate phosphatase 7 [Source:UniProtKB/Swiss-Prot;Acc:Q6H5L4]
+#Location Chromosome 9: 12,251,875-12,254,061 forward strand. (2,186 bp)
+#
+#About this transcript This transcript has 7 exons, is annotated with 10 domains and features, is associated with  variations and maps to 1 oligo probe.
+#Gene This transcript is a product of gene OS09G0369400
+#
+#TRegGA-TR: Nipponbare Chr9 12228202-12277768 (49,566 bp)
+#TRegGA-CY: Nipponbare Chr9 12228001-12278000 (50,000 bp)
+#
+#34 TPP7 at Indica
+
+
+
+# make CHECKONLY=no TARGET=NbEL2 REFERENCE=OsjCHR3 FROM=460000 TO=480000 -f Makefile_TRegGA-orig ${TRegGA_DIR}/targets/NbEL2.embl >& err
+#would produce the files for a new target (NbEL2).
+
+
+#3 prepare the targets
+#1) Sub1 cluster
+cd ${TRegGA_DIR}
+TARGET=Sub1
+REFERENCE=OsjCHR9
+FROM=6253001
+TO=6453000
+
+#2) TPP7
+TARGET=TPP7
+REFERENCE=OsjCHR9
+FROM=12228001
+TO=12278000
+
+#3) OsiSub1 cluster
+cd ${TRegGA_DIR}
+TARGET=OsiSub1
+REFERENCE=OsiCHR9
+FROM=5791824
+TO=6027577
+
+
+ 
+source TRegGA.source
+
+make CHECKONLY=no NUMPROC=30 CULTIVAR=${CULTIVAR} SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig ${TRegGA_DIR}/targets/${TARGET}.embl >& err_${TARGET}
+
+
+#4 run the rfguided assembly with the prepared targets
+
+#1) Sub1 cluster
+cd ${TRegGA_DIR}
+TARGET=Sub1
+REFERENCE=OsjCHR9
+FROM=6253001
+TO=6453000
+
+#2) TPP7
+TARGET=TPP7
+REFERENCE=OsjCHR9
+FROM=12228001
+TO=12278000
+
+#3) OsiSub1 cluster
+cd ${TRegGA_DIR}
+TARGET=OsiSub1
+REFERENCE=OsiCHR9
+FROM=5791824
+TO=6027577
+
+
+make CHECKONLY=no NUMPROC=16 CULTIVAR=${CULTIVAR} SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig >& err
+
+cd ${TRegGA_DIR}/assembly/rfguided/${SYNONYM}-on-${TARGET}
+echo "
+#!/bin/bash
+#PBS -m abe
+#PBS -l nodes=1:ppn=32,vmem=240gb,walltime=8:00:00
+#PBS -M huangcy@indiana.edu
+#PBS -N Makefile_RGA_${SYNONYM}-on-${TARGET}
+#PBS -j oe
+
+module add bowtie/1.1.1
+module add bowtie2/2.2.3
+module add bwa/0.7.6a
+module add java
+module add python
+module add R
+module add ngsutils
+module add samtools
+module add soapdenovo2
+
+cd ${TRegGA_DIR}/assembly/rfguided/${SYNONYM}-on-${TARGET}
+make -j 30 -f Makefile_RGA_${SYNONYM}-on-${TARGET}
+" > Makefile_RGA_${SYNONYM}-on-${TARGET}.qsub
+
+qsub Makefile_RGA_${SYNONYM}-on-${TARGET}.qsub >& err_${SYNONYM}-on-${TARGET}
+
+
+
