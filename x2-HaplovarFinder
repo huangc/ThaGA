@@ -37,12 +37,12 @@ awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' > g
 done
 
 # cultivar identification
-# Choose from these two SNP-Seek databases, defined in 0SOURCE
-# PLINKFNAME=${findbySNP_DIR}/data/NB-core_v4
-# PLINKFNAME=${findbySNP_DIR}/data/3krg_filt_snp_v4
+# Choose from these two SNP-Seek databases in ${prereq_DIR}
+# PLINKFNAME=NB-core_v4
+# PLINKFNAME=3krg_filt_snp_v4
 
 for file in ${SAMPLE}
-    do python2 ${findbySNP_DIR}/src/identify.py ${PLINKFNAME} gatk_${file}_env_snp_${TARGET}.vcf > gatk_${file}_env_snp_${TARGET}.haplovar
+    do python2 ${bin_DIR}/identify.py ${prereq_DIR}/${PLINKFNAME} gatk_${file}_env_snp_${TARGET}.vcf > gatk_${file}_env_snp_${TARGET}_${PLINKFNAME}.haplovar
 done
 
 # Report back to ThaRegGA
