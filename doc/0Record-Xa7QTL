@@ -1,0 +1,107 @@
+## Aim: To retrieve and annotate the Xa7QTL homologous region in Aus DJ123 [1] using the rfguided step in TregGA and Japonica as reference. 
+[1] Schatz MC, Maron LG, Stein JC, Hernandez Wences A, Gurtowski J, Biggers E, Lee H, Kramer M, Antoniou E, Ghiban E, Wright MH, Chia JM, Ware D, McCouch SR, McCombie WR. Whole genome de novo assemblies of three divergent strains of rice,  Oryza sativa, document novel gene space of aus and indica. Genome Biol. 2014;15(11):506.
+
+## Xa7QTL region:
+# M5..M5_56K in rice japonica is chr6:27,965,437..28,022,337, Length=56,901 bp
+# M5..M5_56K in rice japonica is redefined as chr6:27,965,001..28,023,000, Length=58,000 bp
+# M5..M5_56K in rice indica, after removing the artifact insert, Length=65,473 bp
+# Seven protein-coding genes are included in this region. They will be used as anchors to clarify the shifting regions such as the 17kb region defined in LeftFlank and RightFlank.
+# Seven genes are: OS06G0673700, OS06G0674000, OS06G0674100, OS06G0674400, OS06G0674800, OS06G0675200, OS06G0675300.
+# Among them, there are two pairs of overlapping genes: "OS06G0673700, OS06G0674000", and "OS06G0675200, OS06G0675300".
+# So we have total of five anchors in this 58Kb Xa7QTL.
+# use 5 Kb and  more on left and right of M5..M5_56K for rfguided assembly; chr6:27960001..28023000, 63 Kb.
+
+##------------------------
+source TRegGA.source
+TRegGA_DIR=/home/huangcy/TRegGA_CY/prj_TRG15git
+DeNOVO_DIR=${TRegGA_DIR}/assembly/denovo/${SYNONYM}
+CHECKME=NO
+NUMPROC=8
+CULTIVAR=DJ123
+SYNONYM=DJ123
+TARGET=OsjXa7QTL
+REFERENCE=OsjCHR6
+FROM=27960001
+TO=28023000
+
+##-----------------------
+#1 run the rfguided part of TRegGA
+# link Aus DJ123 contigs and scaffolds here
+cd ${TRegGA_DIR}
+mkdir assembly/denovo/${SYNONYM}
+cd ${DeNOVO_DIR}
+ln -s /home/huangcy/TRegGA_CY/prj/reference/Os-DJ123-Draft-CSHL-1.0/os.dj123.cshl.draft.1.0.scaffold.fa ${SYNONYM}.scafSeq
+
+##-----------------------
+#2 prepare target seq
+cd ${TRegGA_DIR}
+
+make CHECKONLY=no NUMPROC=8 CULTIVAR=${CULTIVAR} SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERE\
+NCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig ${TRegGA_DIR}/targets/${TARGET}.embl >& err_${TARGET}
+
+##-----------------------
+#3 prepare Makefile_RGA-Abacas that takes the Scaffolds from downloads and run only the ABACAS and RATT of the rfguided step. Note that no reads are available for the AlignGraph and Gagfiller.
+
+##-----------------------
+#4 run rfguided assembly
+cd ${TRegGA_DIR}/assembly/rfguided
+mkdir $SYNONYM-on-$TARGET
+sed -r		-e "s/^SYNONYM             = LABEL/SYNONYM             = $SYNONYM/" \
+    		-e "s/^TARGET_SEQNAME      = GUIDESEQ/TARGET_SEQNAME      = $TARGET/" \
+		-e "s/QTO-t               =                     NUMPROC/QTO-t               =                     $NUMPROC/" \
+		Makefile_RGA-Abacas > $SYNONYM-on-$TARGET/Makefile_RGA_$SYNONYM-on-$TARGET
+
+cd $SYNONYM-on-$TARGET
+time make -j 8 -f Makefile_RGA_$SYNONYM-on-$TARGET >& err
+
+##----------------------
+#5 All-in-one
+# make CHECKONLY=no NUMPROC=8 CULTIVAR=${CULTIVAR} SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERE\
+NCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig >& err
+
+#6 NOT GOOD COVERAGE of DJ123 scaffolds on the OsjXa7QTL
+# use contigs instead
+cd ${DeNOVO_DIR}
+mv ${SYNONYM}.scafSeq _${SYNONYM}.scafSeq
+ln -s /home/huangcy/TRegGA_CY/prj/reference/Os-DJ123-Draft-CSHL-1.0/os.dj123.cshl.draft.1.0.fsa ${SYNONYM}.scafSeq
+time make -j 8 -f Makefile_RGA_$SYNONYM-on-$TARGET >& err
+# result is the same as using scafSeq
+
+#7 Use the whole OsjCHR6 as the target
+TARGET=OsjCHR6all
+REFERENCE=OsjCHR6
+FROM=1
+TO=32913967
+cd ${DeNOVO_DIR}
+ln -s /home/huangcy/TRegGA_CY/prj/reference/Os-DJ123-Draft-CSHL-1.0/os.dj123.cshl.draft.1.0.scaffold.fa \
+${SYNONYM}.scafSeq
+
+# prepare target, need OsjCHR6.gff3 and OsjCHR6.fasta
+# OsjCHR6: 32913967 bp
+
+make CHECKONLY=no NUMPROC=8 CULTIVAR=${CULTIVAR} SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERE\
+NCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig ${TRegGA_DIR}/targets/${TARGET}.embl >& err_${TARGET}
+
+cd ${TRegGA_DIR}/targets
+mv OsjCHR6all.gff3 OsjCHR6.gff3
+mv OsjCHR6all.fasta OsjCHR6.fasta
+
+TARGET=OsjCHR6
+mv 
+cd ${TRegGA_DIR}/assembly/rfguided
+mkdir $SYNONYM-on-$TARGET
+sed -r          -e "s/^SYNONYM             = LABEL/SYNONYM             = $SYNONYM/" \
+                -e "s/^TARGET_SEQNAME      = GUIDESEQ/TARGET_SEQNAME      = $TARGET/" \
+		                -e "s/QTO-t               =                     NUMPROC/QTO-t               =           \
+          $NUMPROC/" \
+	                  Makefile_RGA-Abacas > $SYNONYM-on-$TARGET/Makefile_RGA_$SYNONYM-on-$TARGET
+
+cd $SYNONYM-on-$TARGET
+time make -j 8 -f Makefile_RGA_$SYNONYM-on-$TARGET >& err
+
+## Use gth and the Xa7QTL proteins
+cd /home/huangcy/TRegGA_CY/prj_TRG15git/assembly/rfguided/DJ123Scaffold-on-OsjXa7QTL/EVALUATION
+Xa7QTL_DIR=/home/huangcy/TRegGA_CY/Xa7QTL
+gth -genomic ${DeNOVO_DIR}/${SYNONYM}.scafSeq -protein ${Xa7QTL_DIR}/markers/Anchor_pep.fa > gth.Xa7QTLpep-on-${SYNONYM}_scafSeq
+	
+
