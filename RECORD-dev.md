@@ -17,7 +17,6 @@
 * 2. M5_M5-56K in rice japonica is redefined as chr6:27,965,001..28,023,000, Length=58,000 bp
 * 3. M5_M5-56K in rice indica is chr6:29,683,670..29,828,319, Length=144,650 bp.
 * 4. M5_M5-56K in rice indica, after removing the artifact insert, Length=65,473 bp
-
 * Seven protein-coding genes are included in this region. They will be used as anchors to clarify the shifting regions such as the 17kb region defined in LeftFlank and RightFlank.
 * Seven genes are: OS06G0673700, OS06G0674000, OS06G0674100, OS06G0674400, OS06G0674800, OS06G0675200, OS06G0675300.
 * Among them, there are two pairs of overlapping genes: "OS06G0673700, OS06G0674000", and "OS06G0675200, OS06G0675300".
@@ -26,12 +25,13 @@
 
 
 ## Xa7 study with ThaRegGA
-#1. Xa7 related cultivars
+* 1. Xa7 related cultivars
+```bash
 cd ${TRegGA_DIR}
 
 
 
-
+```
 
 ## REFERENCE:
 * [2] Xia Chun, Chen H, Zhu X. Identification, Mapping, Isolation of the Genes Resisting to Bacterial Blight and Breeding Application in Rice. Molecular Plant Breeding. 2012;3(12)121-131.
