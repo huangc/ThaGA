@@ -6,12 +6,12 @@
 2. develop algorithm for identifying haplotypes of a target gene from 3kRGP
 3. repeat of Aim1 with developed algorithm for ThaRegGA.
 
-# Cultivars that are Xoo resistant
-# CX134 IRBB7 Indica  Note: [6] Xa7
-# IRIS 313-10605 DV86	 Aus/boro  Note: [2][4] Xa7;Xa5
-# CX369 IRBB62  Indica Note: [5] Xa4;Xa7;Xa21
-# CX126		 IRBB60	 Indica	   Note: [3][4] Xa4;xa5;xa13;Xa21
-# CX44		 IR58025B	   Indica	Note: [3][4] Xa4;xa5;xa13;Xa21
+## Cultivars that are Xoo resistant
+* CX134 IRBB7 Indica  Note: [6] Xa7
+* IRIS 313-10605 DV86	 Aus/boro  Note: [2][4] Xa7;Xa5
+* CX369 IRBB62  Indica Note: [5] Xa4;Xa7;Xa21
+* CX126		 IRBB60	 Indica	   Note: [3][4] Xa4;xa5;xa13;Xa21
+* CX44		 IR58025B	   Indica	Note: [3][4] Xa4;xa5;xa13;Xa21
 
 
 ## Agenda of ThaRegGA application on finding Xa7 gene.
