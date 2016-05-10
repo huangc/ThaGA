@@ -23,15 +23,13 @@
 * 5. M5_M5-56K in rice indica, after removing the artifact insert, Length=66,477 bp.
   * Artifact insert region in indica is chr6:29,704,162..29,783,684, Length=79,523 bp.
   * Gene annotations are all re-coordinated to start from position 1.
-
-
 * Seven protein-coding genes are included in this region. They will be used as anchors to clarify the shifting regions such as the 17kb region defined in LeftFlank and RightFlank.
 * Seven genes are: OS06G0673700, OS06G0674000, OS06G0674100, OS06G0674400, OS06G0674800, OS06G0675200, OS06G0675300.
 * Among them, there are two pairs of overlapping genes: "OS06G0673700, OS06G0674000", and "OS06G0675200, OS06G0675300".
 * So we have total of five anchors in this 58Kb Xa7QTL.
 * use 5 Kb and  more on left and right of M5..M5_56K for rfguided assembly; chr6:27960001..28023000, 63 Kb.
 
-#### Xa7 study with aplovars
+#### Xa7 study with haplovars
 * 1. Xa7 related cultivars
 ```bash
 cd ${TRegGA_DIR}
