@@ -12,6 +12,13 @@ ThaRegGA is implemented as a collection of shell scripts and ancillary Python co
 For IU Mason cluster users, the prerequisite softwares can be loaded from the system:
 - module add blat/35
 
+### bin/
+* add bin/ to PYTHONPATH
+echo '# PYTHONPATH added by haplovar/bin
+export PYTHONPATH="$PYTHONPATH:/projects/huangcy/MYGIT/TRegGA/haplovars/bin"
+' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
+source ~/.bashrc
+
 ### TRegGA
 * See https://github.com/huangc/TRegGA
 * Last update: April 2016
