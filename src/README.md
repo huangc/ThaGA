@@ -14,10 +14,12 @@ For IU Mason cluster users, the prerequisite softwares can be loaded from the sy
 
 ### bin/
 * add bin/ to PYTHONPATH
+```bash
 echo '# PYTHONPATH added by haplovar/bin
 export PYTHONPATH="$PYTHONPATH:/projects/huangcy/MYGIT/TRegGA/haplovars/bin"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 source ~/.bashrc
+```
 
 ### TRegGA
 * See https://github.com/huangc/TRegGA
@@ -26,7 +28,6 @@ source ~/.bashrc
 ```bash
 cd ${GIT_DIR}
 git clone https://github.com/huangc/TRegGA.git
-
 ```
 
 ### Plink
@@ -39,7 +40,6 @@ cd plink
 wget https://www.cog-genomics.org/static/bin/plink160416/plink_linux_x86_64.zip
 unzip plink_linux_x86_64.zip
 export PATH=$PATH:${src_DIR}/plink
-
 ```
 
 ### Anaconda2
@@ -62,21 +62,18 @@ echo '# PYTHONPATH added by anaconda2
 export PYTHONPATH="$PYTHONPATH:/home/huangcy/src/anaconda2/lib/python2.7/site-packages"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 source ~/.bashrc
-
 ```
 
 ### Python package Pyvcf
 * See http://pyvcf.readthedocs.io/en/latest/
 ```bash
 pip install pyvcf
-
 ```
 
 ### Python package Biopython
 * See http://biopython.org/wiki/Biopython
 ```bash
 pip install biopython
-
 ```
 
 ### Blat
@@ -89,7 +86,6 @@ cd blatSuite
 wget http://hgwdev.cse.ucsc.edu/~kent/exe/linux/blatSuite.zip
 unzip blatSuite.zip
 export PATH=$PATH:${src_DIR}/blatSuite
-
 ```
 
 ### Blast+
@@ -102,5 +98,4 @@ cd blast
 wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.3.0/ncbi-blast-2.3.0+-x64-linux.tar.gz
 tar -xzf ncbi-blast-2.3.0+-x64-linux.tar.gz
 export PATH=$PATH:${src_DIR}/blast//ncbi-blast-2.3.0+/bin
-
 ```
