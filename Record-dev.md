@@ -14,7 +14,7 @@
 * CX44		 IR58025B	   Indica	Note: [3][4] Xa4;xa5;xa13;Xa21
 
 
-## Agenda of ThaRegGA application on finding Xa7 gene.
+## Agenda of haplovars application on finding Xa7 gene.
 #### Xa7 Target region:
 * 1. M5_M5-56K in rice japonica is chr6:27,965,437..28,022,337, Length=56,901 bp.
 * 2. M5_M5-56K in rice japonica is redefined as chr6:27,965,001..28,023,000, Length=58,000 bp.
@@ -31,7 +31,7 @@
 * So we have total of five anchors in this 58Kb Xa7QTL.
 * use 5 Kb and  more on left and right of M5..M5_56K for rfguided assembly; chr6:27960001..28023000, 63 Kb.
 
-#### Xa7 study with ThaRegGA
+#### Xa7 study with aplovars
 * 1. Xa7 related cultivars
 ```bash
 cd ${TRegGA_DIR}
@@ -48,3 +48,6 @@ cd ${TRegGA_DIR}
 * [2] Xia Chun, Chen H, Zhu X. Identification, Mapping, Isolation of the Genes Resisting to Bacterial Blight and Breeding Application in Rice. Molecular Plant Breeding. 2012;3(12)121-131.
 * [3] Khan, MueenAlam. Molecular breeding of rice for improved disease resistance, a review. Australasian Plant Pathology. 2015 May 1;44(3):273-282.
 * [4] Iyer AS, McCouch SR. The rice bacterial blight resistance gene xa5 encodes a novel form of disease resistance. Mol Plant Microbe Interact. 2004 Dec;17(12):1348-54.
+* [5] Le Cam Loan, Vo Thi Thu Ngan, and Pham Van Du. Preliminary Evaluation on Resistance Genes Against Rice Bacterial Leaf Blight In Can Tho Province - Vietnam. Omonrice 14 44-47 (2006).
+* [6] Yuchen Zhang et al. Identification and molecular mapping of the rice bacterial blight resistance gene allelic to Xa7 from an elite restorer line Zhenhui 084. Eur J Plant Pathol (2009) 125:235–244
+
