@@ -44,5 +44,5 @@ git clone https://github.com/huangc/haplovars.git
 1. TRegGA: https://github.com/BrendelGroup/TRegGA
 2. 3,000 rice genomes project. The 3,000 rice genomes project. Gigascience. 2014  May 28;3:7.
 3. Alexandrov N, et al. SNP-Seek database of SNPs derived from 3000 rice genomes. Nucleic Acids Res. 2015 Jan;43(Database issue):D1023-7.
-4. Murat Öztürk, https://github.com/muzcuk/findbySNP
+4. Murat Öztürk, https://github.com/muzcuk/find-by-SNP.git
 5. The Rice 3000 Genomes Project Data. http://gigadb.org/dataset/200001.
