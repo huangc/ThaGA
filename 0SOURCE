@@ -13,7 +13,7 @@ run_DIR=${WORK_DIR}/run
 scratch_DIR=${WORK_DIR}/scratch
 
 ## Prereq parameters
-# REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
+# REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/.
 # REFSEQ=OsjCHR.fa
 REFSEQ=OsjChr6.fa
 # REFSEQNAME is the file name for REFSEQ without file extension.
@@ -23,10 +23,11 @@ REFSEQNAME=OsjChr6
 REFGFF=OsjCHR.gff3
 
 ## SAMPLE is a list of sample names. Each sample name should be only one word.
-# SAMPLE="GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 OSATIVA CHINGCHUNG NIAOYAO CHINGLIU"
+# SAMPLE="GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 O\
+SATIVA CHINGCHUNG NIAOYAO CHINGLIU"
 # SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
 # SAMPLE="IRBB7"
-# SAMPLE=`cat TRegGA.sample_SYNONYM_findbySNP`
+# SAMPLE=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
 # SAMPLENAME is the collected sample name for reporting purpose, such as YB for all samples of YB1..YB8
 SAMPLENAME=XA7
 # SAMPLENUM is the number of samples in this study
@@ -49,8 +50,8 @@ CHR=6
 
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 # denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
-denovo_DIR=../assembly/denovo
-# In order for the workflow to parse the contigs correctly, 
+denovo_DIR=${TRegGA_DIR}/assembly/denovo
+# In order for the workflow to parse the contigs correctly,
 # the contig files should be stored and named as ${denovo_DIR}/${SAMPLE}/${SAMPLE}-SOAP/${SAMPLE}-soap.contig
 SEQ="soap.contig"
 SEQNAME="contig"
@@ -60,16 +61,16 @@ SEQNAME="contig"
 # PLINKFNAME=NB-core_v4
 PLINKFNAME=3krg_filt_snp_v4
 
-## SNP_DIR for snp files in vcf format. 
+## SNP_DIR for snp files in vcf format.
 # vcf files are retrieved from SNP-Seek: http://oryzasnp.org/iric-portal/_variety.zul
 VCF_DIR='https://s3.amazonaws.com/3kricegenome/Nipponbare'
 # SNPs are called using WGvarSNP workflow
 # snp files have this extention: *_env_snp.vcf
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
 
-# findbySNP set the number of top ranked cultivars returned by x2-findbySNP, 
-# and COMM for the number of cultivars that are shared among top ranked. 
-# If more than one cultivars are queried for finding haplovars in x2-findbySNP, COMM is to restrict the reported haplovars. 
+# findbySNP set the number of top ranked cultivars returned by x2-findbySNP,
+# and COMM for the number of cultivars that are shared among top ranked.
+# If more than one cultivars are queried for finding haplovars in x2-findbySNP, COMM is to restrict the reported haplovars.
 TOP=30
 COMM=3
 
@@ -98,30 +99,18 @@ NUM_THREADS=4
 # PARTS is the number of parts for sample splitting.
 PARTS=18
 
-## blat in x1-WGblat
+## blat in x4-WGblat
 # Add blat directory to the PATH
 # export PATH=$PATH:${src_DIR}/blatSuite
 PERC_IDENTITY=99
 MIN_SCORE=250
 
-## blat in x3-WGtalen
-# The deletion site from reference sequence plus its surrounding GAP_BORDER size is retrieved for 
-# blat alignment against sample contig for evaluation of the pTALEN target site. 
-# The blat alignment result could be suboptimal depending on the deletion's site in contig or its size. 
-# Adjust PERC_IDENTITY_RET value to optimize the blat alignment, if needed.
-PERC_IDENTITY_RET=95
-
-## filtering the blat indel results 
+## filtering the blat indel results
 GAP_MINNUM=1 #Minimal number of gaps, more than and including this number. Set to 1 to filter for alignment that has at least one gap.
 GAP_MINSIZE=100 #Minimal gap size in bp, more than and including this number.
 GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
 
-## qsub parameters for x1-WGblat job running on Mason 
-# The run time for whole genome blat of a typical 3kRGP rice cultivar contigs against reference rice Japonica
-# takes about 120 hrs on Mason. Plan carefully for submitting the job.
-# Alternatively, set up PARTS to run blat in parallel.
-# WALLTIME=120
+## qsub parameters for x4-WGblat job running on Mason
 WALLTIME=12
-PPN=20
 VMEM=20
-
+PPN=20
