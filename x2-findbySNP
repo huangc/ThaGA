@@ -1,0 +1,75 @@
+#!/bin/bash
+
+##--------------------------
+# x2-findbySNP is aimed to take a list of cultivar names or cultivar SNPs in vcf format (if the cultivar is not in 3kRGP), 
+# the target CHR, FROM and TO positions, and generate sample.foundbySNP which is a list of cultivars from 3kRGP as close-relatives of the query cultivars
+# based on the best matched SNP profile (haplovars) as output.
+
+# For the findbySNP to work, it looks at the intersection of SNP positions
+# of cultivar vcf against the SNP-Seek dataset.
+# It is critical to make sure the SNP position in vcf files is in the format of "CHR POS" => "1 2345"
+# as intersection of "OsjChr1 2345" and "1 2345" will not work apparently.
+# The WGvarSNP generates vcf files with OsjChr1 for chromosome1.
+# Change the CHR name from "OsjChr1" to "1" for vcf files if necessary.
+
+## Haplovar identification
+# identify.py can run with a plink dataset and a sample name, in which case it will 
+# compare this sample against all others in the given dataset.
+# Note that this will not work unless a sample with a given name exists and match EXACTLY with the dataset.
+# Additionally, one can specify a range and an output file.
+# do python2 ${bin_DIR}/identify.py ${prereq_DIR}/${PLINKFNAME} gatk_${file}_env_snp_${TARGET}.vcf \
+# > gatk_${file}_env_snp_${TARGET}_${PLINKFNAME}.haplovar
+
+##---------------------------------------------------
+source ./0SOURCE
+# include the TRegGA.source
+TRegGA_DIR=`dirname $PWD`
+source ${TRegGA_DIR}/TRegGA.source
+
+cd ${run_DIR}
+mkdir -p findbySNP
+cd findbySNP
+\cp ${WORK_DIR}/sample.tofindbySNP .
+CULTIVAR=`cut -d"|" -f1 sample.tofindbySNP | awk 1 ORS=" "`
+SYNONYM=`cut -d"|" -f3 sample.tofindbySNP | awk 1 ORS=" "`
+SAMPLE=`cut -d"|" -f3 sample.tofindbySNP | awk 1 ORS=" "`
+
+for i in ${CULTIVAR}
+do
+python2 ${bin_DIR}/identify.py ${prereq_DIR}/${PLINKFNAME} -name ${i} \
+-range ${CHR} ${FROM} ${TO} \
+-out ${i}-on-${TARGET}_${PLINKFNAME}.haplovar &
+
+# remove comments and sort the list by distance
+awk '$1 != "#" ' ${i}-on-${TARGET}_${PLINKFNAME}.haplovar | sort -k 2 -n > \
+ ${i}-on-${TARGET}_${PLINKFNAME}_sorted.haplovar
+
+# Find common haplovars by selection top TOP and sort
+head -${TOP} ${i}-on-${TARGET}_${PLINKFNAME}_sorted.haplovar | cut -f1 >> top${TOP}
+done
+
+# select cultivars that are present in all haplovars
+sort top${TOP} | uniq -c | grep -w "${COMM}" | sed -e 's/^[ \t]*//g' > top${TOP}_sorted_uniq
+
+# Retrieve the cultivar names from reads/rice_line_metadata_20140521.tsv
+\rm -f sample.foundbySNP
+len=`awk 'END { print NR }' top${TOP}_sorted_uniq`
+for ((k=1; k<=$len; k++))
+do
+head -$k top${TOP}_sorted_uniq | tail -1 > rec.haplovar
+CULTIVAR=`cut -d " " -f 2 rec.haplovar`
+grep "^$CULTIVAR" ${TRegGA_DIR}/reads/rice_line_metadata_20140521.tsv > rec.rice_line
+VARID=`cut -f1 rec.rice_line`
+SNPseekID=`cut -f5 rec.rice_line`
+VARNAME=`cut -f13 rec.rice_line`
+VARGROUP=`cut -f18 rec.rice_line`
+echo "$VARID|$SNPseekID|$VARNAME|$VARGROUP" >> sample.foundbySNP
+done
+
+# The VARNAME/SYNONYME (third column, $3) CANNOT have any whitespace in it. Replace the whitespaces with "_" or remove it if there is any.
+awk 'BEGIN {OFS=FS="|"} {gsub(/\s/,"_",$3); print }' sample.foundbySNP > tmp && \mv tmp sample.foundbySNP
+# awk 'BEGIN {OFS=FS="|"} {gsub(/\s/,"",$3); print }' sample.foundbySNP > tmp && \mv tmp sample.foundbySNP
+
+# Copy result to ${WORK_DIR}
+\cp sample.foundbySNP ${WORK_DIR}
+
