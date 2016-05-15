@@ -21,7 +21,7 @@ mkdir -p ${WORK_DIR}/run
 mkdir -p ${WORK_DIR}/scratch
 
 # Add ${bin_DIR} to PYTHONPATH
-echo '# added by ThaRegGA
+echo '# added by haplovars
 export PYTHONPATH="$PYTHONPATH:${bin_DIR}"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 source ~/.bashrc
@@ -50,7 +50,8 @@ sh ${bin_DIR}/xgetseq
 
 # Retrieve SNP-Seek datasets: NB-core_v4 and 3krg_filt_snp_v4
 cd ${prereq_DIR}
-make -f Makefile-SNP-Seek
+make NB-core_v4 -f Makefile-SNP-Seek
+make 3krg_filt_snp_v4 -f Makefile-SNP-Seek
 
 " > prereq-on-${REFSEQNAME}.qsub
 qsub prereq-on-${REFSEQNAME}.qsub
