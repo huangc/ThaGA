@@ -20,10 +20,7 @@ source ./0SOURCE
 TRegGA_DIR=`dirname $PWD`
 source ${TRegGA_DIR}/TRegGA.source
 
-cd ${run_DIR}
-mkdir -p DFPs
-cd DFPs
-\cp ${WORK_DIR}/sample.foundbySNP .
+# \cp ${run_DIR}/findbySNP/sample.foundbySNP .
 CULTIVAR=`cut -d"|" -f1 sample.foundbySNP | awk 1 ORS=" "`
 SYNONYM=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
 SAMPLE=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
@@ -43,12 +40,13 @@ for i in ${SAMPLE}
 do
 QUERY=${i}-${SEQ}
 QUERYNAME=${i}.${SEQNAME}
+
 echo "
 #!/bin/bash
 #PBS -m abe
 #PBS -l nodes=1:ppn=${PPN},vmem=${VMEM}gb,walltime=${WALLTIME}:00:00
 #PBS -M ${EMAIL}
-#PBS -N x1-WGblat
+#PBS -N x4-WGblat
 #PBS -j oe
 module add python
 module add blat
@@ -62,8 +60,16 @@ cd ${prereq_DIR}
 ln -s ${denovo_DIR}/${i}/${i}-soap.contig .
 makeblastdb -in ${i}-soap.contig -dbtype nucl -out DB_${i}_contig -parse_seqids
 
+# split sample into parts
+\rm -r ${QUERY}.*
+gt splitfasta -numfiles ${PARTS} ${QUERY}
+
 # run blat of sample parts in parallel
 cd ${run_DIR}
+mkdir -p DFPs
+cd DFPs
+\cp ${WORK_DIR}/sample.foundbySNP .
+
 for ((k=1; k<=${PARTS}; k++))
 do
 blat -t=dna -q=dna -out=psl -minIdentity=${PERC_IDENTITY} -minScore=${MIN_SCORE} -mask=lower \
@@ -74,7 +80,7 @@ done
 wait
 
 # Combine all parts back into one file
-cd ${run_DIR}
+cd ${run_DIR}/DFPs
 \rm blat.${DB_REFSEQ}.${QUERYNAME}.psl
 \rm blat.${DB_REFSEQ}.${QUERYNAME}.Reps.psl
 \rm blat.${DB_REFSEQ}.${QUERYNAME}.Reps.psr
