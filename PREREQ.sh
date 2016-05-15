@@ -26,16 +26,8 @@ export PYTHONPATH="$PYTHONPATH:${bin_DIR}"
 ' | cat ~/.bashrc - > tmp && mv tmp ~/.bashrc
 source ~/.bashrc
 
-## Prepare for the SOAPdenovo2-assembled sample contigs.
-# Note: the contigs have been assembled previously using TRegGA workflow, and we are just linking those contig files here.
 cd ${prereq_DIR}
-for i in ${SAMPLE}
-do
-ln -s ${denovo_DIR}/${i}/${i}-SOAP/${i}-soap.contig .
-makeblastdb -in ${i}-soap.contig -dbtype nucl -out DB_${i}_contig -parse_seqids
-done
 
-# Retrieve and index the reference genome
 echo "
 #!/bin/bash
 #PBS -m abe
@@ -43,7 +35,15 @@ echo "
 #PBS -N prereq-on-${REFSEQNAME}
 #PBS -j oe
 
+## Prepare for the SOAPdenovo2-assembled sample contigs.
+# Note: the contigs have been assembled previously using TRegGA workflow, and we are just linking those contig files here.
+
 cd ${prereq_DIR}
+for i in ${SAMPLE}
+do
+ln -s ${denovo_DIR}/${i}/${i}-SOAP/${i}-soap.contig .
+makeblastdb -in ${i}-soap.contig -dbtype nucl -out DB_${i}_contig -parse_seqids
+done
 
 # Retrieve and index the reference sequence for Blast
 sh ${bin_DIR}/xgetseq
