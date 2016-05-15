@@ -1,5 +1,5 @@
 ## General
-EMAIL=huangcy@indiana.edu
+EMAIL=youremail@indiana.edu
 WORK_DIR=$(pwd)
 TRegGA_DIR=`dirname $PWD`
 
