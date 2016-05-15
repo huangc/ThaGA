@@ -1,6 +1,7 @@
 ## General
 EMAIL=huangcy@indiana.edu
 WORK_DIR=$(pwd)
+TRegGA_DIR=`dirname $PWD`
 
 ## Sub-directory for workflow
 prereq_DIR=${WORK_DIR}/prereq
@@ -25,6 +26,7 @@ REFGFF=OsjCHR.gff3
 # SAMPLE="GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 OSATIVA CHINGCHUNG NIAOYAO CHINGLIU"
 # SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
 # SAMPLE="IRBB7"
+# SAMPLE=`cat TRegGA.sample_SYNONYM_findbySNP`
 # SAMPLENAME is the collected sample name for reporting purpose, such as YB for all samples of YB1..YB8
 SAMPLENAME=XA7
 # SAMPLENUM is the number of samples in this study
@@ -64,6 +66,12 @@ VCF_DIR='https://s3.amazonaws.com/3kricegenome/Nipponbare'
 # SNPs are called using WGvarSNP workflow
 # snp files have this extention: *_env_snp.vcf
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
+
+# findbySNP set the number of top ranked cultivars returned by x2-findbySNP, 
+# and COMM for the number of cultivars that are shared among top ranked. 
+# If more than one cultivars are queried for finding haplovars in x2-findbySNP, COMM is to restrict the reported haplovars. 
+TOP=30
+COMM=3
 
 ## blastn
 # Add blast+ directory to the PATH
@@ -109,10 +117,7 @@ GAP_MINSIZE=100 #Minimal gap size in bp, more than and including this number.
 GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
 
 ## qsub parameters for x1-WGblat job running on Mason 
-# The run time for whole genome blat of a typical 3kRGP rice cultivar contigs against reference rice Japonica
-# takes about 90-100 hrs on Mason. Plan carefully for submitting the job. 
-# WALLTIME=120
 WALLTIME=24
-VMEM=500
-PPN=30
+VMEM=200
+PPN=20
 
