@@ -76,13 +76,12 @@ source ./0SOURCE
 source ${TRegGA_DIR}/TRegGA.source
 # copy the TRegGA.sample and rename for haplovars operation
 \cp ${TRegGA_DIR}/TRegGA.sample sample.TRegGA
-# Select/edit sample.TRegGA and save as sample.findbySNP for the cultivars to be subject to haplovars study
-\cp sample.TRegGA sample.findbySNP
+# Select/edit sample.TRegGA and save as sample.tofindbySNP for the cultivars to be subject to haplovars study
+\cp sample.TRegGA sample.tofindbySNP
 ```
 
-* 2. prepare for haplovars run
+* 3. Prepare for haplovars identification of $SAMPLE in sample.tofindbySNP using SNP profiling with x1-WGvarSNP
 ```bash
-# retrieve SNPs for IRBB7
 cd ${run_DIR}
 mkdir -p SNPs
 cd SNPs
@@ -91,54 +90,35 @@ CULTIVAR=`cut -d"|" -f1 TRegGA.sample | awk 1 ORS=" "`
 SYNONYM=`cut -d"|" -f3 TRegGA.sample | awk 1 ORS=" "`
 SAMPLE=`cut -d"|" -f3 TRegGA.sample | awk 1 ORS=" "`
 
-len=`awk 'END { print NR }' TRegGA.sample`
-for ((k=1; k<=$len; k++))
-do
-head -$k TRegGA.sample | tail -1 > rec
-CULTIVAR=`cut -d "|" -f1 rec`
-SYNONYM=`cut -d "|" -f2 rec`
-# retrieve SNP vcf files from SNP-Seek
-wget ${VCF_DIR}/${CULTIVAR}.snp.vcf.gz
+# (Optional) Retrieve SNP vcf files from SNP-Seek. Note that SNP-Seek uses $CULTIVAR naming format.
+# wget ${VCF_DIR}/${CULTIVAR}.snp.vcf.gz
 
-# Alternatively, run x1-WGvarSNP with reads for SNPs
-    do ln -s ${SNP_DIR}/gatk_${file}_env_snp.vcf .
-	sed -i 's/^OsjChr//' gatk_${file}_env_snp.vcf
+# (Optional) SNPs calling for cultivars using x1-WGvarSNP with reads processed by TRegGA
+sh x1-WGvarSNP
+for i in $SAMPLE
+    do qsub gatk_${i}-on-${REFSEQNAME}.qsub
+    sed -i 's/^OsjChr//' ${i}_env_snp.vcf
 done
 
-# Restrict SNPs to the target region defined by TARGET, REFERENCE, FROM, and TO in 0SOURCE of TRegGA, such as:
-# TARGET=OsjSWEET13
-# REFERENCE=OsjCHR12
-# FROM=17292001
-# TO=17315000
-# Modify REFERENCE so that it is consistent with the SNP-Seek convention for chromosome name.
+# Modify REFERENCE in vcf file so that it is consistent with the SNP-Seek convention for chromosome name.
 echo $REFERENCE > tmp
 REFERENCE=`sed 's/OsjCHR//' tmp`
+
+# (Optional) Restrict SNPs to the target region defined by TARGET, REFERENCE(chromosome), FROM, and TO in 0SOURCE of TRegGA
 for file in ${SAMPLE}
 do
-grep -w "^$REFERENCE" gatk_${file}_env_snp.vcf |\
-awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' > gatk_${file}_env_snp_${TARGET}.vcf
+grep -w "^$REFERENCE" ${file}_env_snp.vcf |\
+awk -v from=${FROM} -v to=${TO} '{ if ( $2 >= from && $2 <= to ) print $0 }' > ${file}_env_snp_${TARGET}.vcf
 done
 ```
 
+* 4. Identify haplovars of $SAMPLE in sample.tofindbySNP based on SNP profiling with x2-findbySNP. This generates sample.foundbySNP.
+```bash
+sh x2-findbySNP
+```
 
-
-
-
-
-
-## haplovarSAMPLE is  a list of haplovar sample SYNONYM names resulted from x2-findbySNP. Each sample name should be only one word.
-len=`awk 'END { print NR }' TRegGA.sample.findbySNP
-for ((k=1; k<=$len; k++))
-do
-head -$k TRegGA.sample.findbySNP | tail -1 > rec
-CULTIVAR=`cut -d "|" -f1 rec`
-SYNONYM=`cut -d "|" -f2 rec`
-echo "$SYNONYM" >> TRegGA.sample_SYNONYM_findbySNP
-done
-
-
-
-
+* 5. Prepare contigs of $SAMPLE in sample.foundbySNP for haplovars identification based on Deletion Fingerprint (DFP) with x3-TRegGA-denovo
+```bash
 # run TRegGA with modified Makefile_denovo-orig to run only contig, skip QUAST, and skip GapFiller.
 # asm_flags  =      1#  1(only contig assembly), 2 (only scaffold assembly), 3(both contig and scaffold assembly), 4 (only gap closure).
 # QTO-t =     0#  Maximum number of threads; set to 0 to not run QUAST
@@ -148,25 +128,35 @@ sed -i 's/asm_flags  =      3#/asm_flags  =      1#/;' ${TRegGA_DIR}/assembly/de
 sed -i 's/QTO-t =     NUMPROC#/QTO-t =     0#/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
 sed -i 's/GFO-i     =       3#/GFO-i     =       0#/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
 
-# generate scripts runTRegGA_${SYNONYM}-on-OsjXa7
+# Replace TRegGA.sample with sample.foundbySNP, then run x3-TRegGA-denovo with modified Makefile_denovo-orig
+cd ${TRegGA_DIR}
+\cp ${run_DIR}/findbySNP/sample.foundbySNP TRegGA.sample
 sh TRegGA-Xa7.run
 
-# run files sequentially
-sh runTRegGA_ARC_11276-on-OsjXa7 &&\
- sh runTRegGA_ARC_12920-on-OsjXa7 &&\
- sh runTRegGA_AUS_242-on-OsjXa7
-	   
-	   
-
-# Report back to haplovars
-\cp *.haplovar ${data_DIR)
-
-##------------------------------------------
 # Revert the modified Makefile_denovo-orig back to original
 \mv ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig-orig ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
+```
+	   
+* 6. Finding Deletion Fingerprints (DFPs) of $SAMPLE in sample.foundbySNP with x4-WGblat and x5-WGindelT.
+```bash
+# Assign $VARNAME (the third column) in sample.foundbySNP as the sample names
+SAMPLE=`cut -d"|" -f3 TRegGA.sample | awk 1 ORS=" "`
+sh x4-WGblat &&\
+sh x5-WGindelT &&\
+```
+
+* 7. Identify haplovars of $SAMPLE in sample.foundbySNP based on DFPs with x6-DFPtree. This generates distance matrix Seq.t_sum_Lg${GAP_MINSIZE_FP}.dmx.
+```bash
+sh x6-DFPtree
+```
+
+* 8. Construct of supercontigs of $SAMPLE in sample.foundbySNP with x7-TRegGA-rfguided
 
 
-
+* 10. Report back to haplovars
+```bash
+\cp *.haplovar ${data_DIR)
+```
 
 
 ## REFERENCE:
