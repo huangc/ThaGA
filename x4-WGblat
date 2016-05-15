@@ -53,10 +53,16 @@ echo "
 module add python
 module add blat
 
+cd \$PBS_O_WORKDIR
+source ./0SOURCE
+# include the TRegGA.source
+TRegGA_DIR=`dirname $PWD`
+
+# index QUERY for blast database
 cd ${prereq_DIR}
-# split sample into parts
-\rm -r ${QUERY}.*
-gt splitfasta -numfiles ${PARTS} ${QUERY}
+# ln -s ${denovo_DIR}/${i}/${i}-SOAP/${i}-soap.contig .
+ln -s ${denovo_DIR}/${i}/${i}-soap.contig .
+makeblastdb -in ${i}-soap.contig -dbtype nucl -out DB_${i}_contig -parse_seqids
 
 # run blat of sample parts in parallel
 cd ${run_DIR}
