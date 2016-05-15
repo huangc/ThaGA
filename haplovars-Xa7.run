@@ -85,16 +85,16 @@ source ${TRegGA_DIR}/TRegGA.source
 cd ${run_DIR}
 mkdir -p SNPs
 cd SNPs
-\cp ${WORK_DIR}/sample.findbySNP .
-CULTIVAR=`cut -d"|" -f1 TRegGA.sample | awk 1 ORS=" "`
-SYNONYM=`cut -d"|" -f3 TRegGA.sample | awk 1 ORS=" "`
-SAMPLE=`cut -d"|" -f3 TRegGA.sample | awk 1 ORS=" "`
+\cp ${WORK_DIR}/sample.tofindbySNP .
+CULTIVAR=`cut -d"|" -f1 sample.tofindbySNP | awk 1 ORS=" "`
+SYNONYM=`cut -d"|" -f3 sample.tofindbySNP | awk 1 ORS=" "`
+SAMPLE=`cut -d"|" -f3 sample.tofindbySNP | awk 1 ORS=" "`
 
 # (Optional) Retrieve SNP vcf files from SNP-Seek. Note that SNP-Seek uses $CULTIVAR naming format.
 # wget ${VCF_DIR}/${CULTIVAR}.snp.vcf.gz
 
 # (Optional) SNPs calling for cultivars using x1-WGvarSNP with reads processed by TRegGA
-sh x1-WGvarSNP
+sh ${WORK_DIR}/x1-WGvarSNP
 for i in $SAMPLE
     do qsub gatk_${i}-on-${REFSEQNAME}.qsub
     sed -i 's/^OsjChr//' ${i}_env_snp.vcf
@@ -114,10 +114,11 @@ done
 
 * 4. Identify haplovars of $SAMPLE in sample.tofindbySNP based on SNP profiling with x2-findbySNP. This generates sample.foundbySNP.
 ```bash
+cd ${WORK_DIR}
 sh x2-findbySNP
 ```
 
-* 5. Prepare contigs of $SAMPLE in sample.foundbySNP for haplovars identification based on Deletion Fingerprint (DFP) with x3-TRegGA-denovo
+* 5. Denovo assemble contigs of $SAMPLE in sample.foundbySNP for haplovars identification with x3-TRegGA-denovo
 ```bash
 # run TRegGA with modified Makefile_denovo-orig to run only contig, skip QUAST, and skip GapFiller.
 # asm_flags  =      1#  1(only contig assembly), 2 (only scaffold assembly), 3(both contig and scaffold assembly), 4 (only gap closure).
@@ -140,14 +141,14 @@ sh TRegGA-Xa7.run
 * 6. Finding Deletion Fingerprints (DFPs) of $SAMPLE in sample.foundbySNP with x4-WGblat and x5-WGindelT.
 ```bash
 # Assign $VARNAME (the third column) in sample.foundbySNP as the sample names
-SAMPLE=`cut -d"|" -f3 TRegGA.sample | awk 1 ORS=" "`
-sh x4-WGblat &&\
-sh x5-WGindelT &&\
+cd ${WORK_DIR}
+sh ${WORK_DIR}/x4-WGblat &&\
+sh ${WORK_DIR}/x5-WGindelT &&\
 ```
 
 * 7. Identify haplovars of $SAMPLE in sample.foundbySNP based on DFPs with x6-DFPtree. This generates distance matrix Seq.t_sum_Lg${GAP_MINSIZE_FP}.dmx.
 ```bash
-sh x6-DFPtree
+sh ${WORK_DIR}/x6-DFPtree
 ```
 
 * 8. Construct of supercontigs of $SAMPLE in sample.foundbySNP with x7-TRegGA-rfguided
