@@ -33,7 +33,7 @@ QUERYNAME=${i}.${SEQNAME}
 echo "
 #!/bin/bash
 source ${WORK_DIR}/0SOURCE
-cd ${run_DIR}
+cd ${run_DIR}/DFPs
 mkdir -p t_${i}
 cd t_${i}
 ln -s ../blat.${DB_REFSEQ}.${QUERYNAME}.Reps.psl .
@@ -129,7 +129,7 @@ done
 
 
 ## Submit 
-cd ${run_DIR}
+cd ${run_DIR}/DFPs
 for i in ${SAMPLE}
 do
 sh x2-WGindelT-perGap-${i} &
@@ -154,7 +154,7 @@ wait
 # The gaps due to insertions can be inferred from qGapSize of 4, 6, 1, 2 (non-zeros), sum up to 13 bp (QgapBases=13).
 # The gaps due to deletions can be inferred from tGapSize of 1, 154, 7, 2 (none-zeros), sum up to 164 bp (TgapBases=164).
 #
-cd ${run_DIR}
+cd ${run_DIR}/DFPs
 for i in ${SAMPLE}
 do
 QUERY=${i}-${SEQ}
@@ -177,7 +177,7 @@ done
 
 for indel in t_onQ t_sum
 do
-cd ${run_DIR}
+cd ${run_DIR}/DFPs
 mkdir -p ${indel}
 cd ${indel}
 \rm -fr *.sample
@@ -185,7 +185,7 @@ for i in ${SAMPLE}
 do
 QUERY=${i}-${SEQ}
 QUERYNAME=${i}.${SEQNAME}
-cp ${run_DIR}/blat.${DB_REFSEQ}.${QUERYNAME}.psl.perGap.t .
+cp ${run_DIR}/DFPs/blat.${DB_REFSEQ}.${QUERYNAME}.psl.perGap.t .
 
 len=`awk 'END { print NR }' blat.${DB_REFSEQ}.${QUERYNAME}.psl.perGap.t`
 for ((k=1; k<=$len; k++))
@@ -259,7 +259,7 @@ done
 cd ${data_DIR}
 for indel in t_onQ t_sum
 do
-\cp ${run_DIR}/${indel}/Seq*_Lg* .
+\cp ${run_DIR}/DFPs/${indel}/Seq*_Lg* .
 done
 
 rename Seq.t ${SAMPLENAME}_SeqDel Seq.t*
