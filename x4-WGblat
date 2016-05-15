@@ -55,8 +55,6 @@ module add blat
 
 cd \$PBS_O_WORKDIR
 source ./0SOURCE
-# include the TRegGA.source
-TRegGA_DIR=`dirname $PWD`
 
 # index QUERY for blast database
 cd ${prereq_DIR}
