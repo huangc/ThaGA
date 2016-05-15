@@ -13,7 +13,18 @@ module add blat
 
 cd $PBS_O_WORKDIR
 source ./0SOURCE
+# include the TRegGA.source
+TRegGA_DIR=`dirname $PWD`
+source ${TRegGA_DIR}/TRegGA.source
+
 cd ${run_DIR}
+mkdir -p DFPs
+cd DFPs
+\cp ${WORK_DIR}/sample.foundbySNP .
+CULTIVAR=`cut -d"|" -f1 sample.foundbySNP | awk 1 ORS=" "`
+SYNONYM=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
+SAMPLE=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
+
 for i in ${SAMPLE}
 do
 QUERY=${i}-${SEQ}
