@@ -17,6 +17,12 @@ wget ftp://ftp.ensemblgenomes.org/pub/plants/release-26/gff3/oryza_sativa/Oryza_
 gunzip -f *.gz
 # mv Oryza_sativa.IRGSP-1.0.26.dat Oryza_sativa.IRGSP-1.0.26.embl
 
+#1a. Retrieve the rice Japonica gff3 file for iloci usage.
+#  Note the gff3 from Plant Ensembl has non-canonical features, and should use the gff3 from MSU instead.
+wget ftp://ftp.plantbiology.msu.edu/pub/data/Eukaryotic_Projects/o_sativa/annotation_dbs/pseudomolecules/version_7.0/all.dir/all.gff3
+# change the Chr name from Chr to OsjChr to match with OsjCHR.fa, and filter for records of "gene".
+sed -e 's/Chr/OsjChr/g' all.gff3 | egrep "^##|^OsjChr.*gene" > ${MSUGFF}
+
 
 #2. Add the label "OsjChr" to the chromosome sequence names so that ">1" becomes ">OsjChr1", etc.:
 #
@@ -74,6 +80,4 @@ sed -e "s/^\([1-9]\)/OsjChr\1/" Oryza_sativa.IRGSP-1.0.26.gff3   | egrep "^##|^O
 #9. Verify the files have been downloaded and processed correctly.
 #
 # shasum -c checksums.sha
-# 39d8c264feaa75c9ee4c9b59e7d38c074c8d08f1  NB-core_v4.map.gz
-# 17238669e38bc13831d8d78f3c1f7deca48c229d  NB-core_v4.ped.gz
 
