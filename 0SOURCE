@@ -13,7 +13,7 @@ run_DIR=${WORK_DIR}/run
 scratch_DIR=${WORK_DIR}/scratch
 
 ## Prereq parameters
-# REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/.
+# REFSEQ is the fasta file for reference genome, retrieved by bin/xgetseq, and located in prereq/. 
 # REFSEQ=OsjCHR.fa
 REFSEQ=OsjChr6.fa
 # REFSEQNAME is the file name for REFSEQ without file extension.
@@ -23,8 +23,7 @@ REFSEQNAME=OsjChr6
 REFGFF=OsjCHR.gff3
 
 ## SAMPLE is a list of sample names. Each sample name should be only one word.
-# SAMPLE="GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 O\
-SATIVA CHINGCHUNG NIAOYAO CHINGLIU"
+# SAMPLE="GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 OSATIVA CHINGCHUNG NIAOYAO CHINGLIU"
 # SAMPLE="YB1 YB2 YB3 YB4 YB5 YB6 YB7 YB8"
 # SAMPLE="IRBB7"
 # SAMPLE=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
@@ -51,7 +50,7 @@ CHR=6
 # denovo_DIR is the directory that stores the denovo-assembled contigs.
 # denovo_DIR=/N/dc2/projects/brendelgroup/TRegGA/TRegGA_v1/assembly/denovo
 denovo_DIR=${TRegGA_DIR}/assembly/denovo
-# In order for the workflow to parse the contigs correctly,
+# In order for the workflow to parse the contigs correctly, 
 # the contig files should be stored and named as ${denovo_DIR}/${SAMPLE}/${SAMPLE}-SOAP/${SAMPLE}-soap.contig
 SEQ="soap.contig"
 SEQNAME="contig"
@@ -61,16 +60,16 @@ SEQNAME="contig"
 # PLINKFNAME=NB-core_v4
 PLINKFNAME=3krg_filt_snp_v4
 
-## SNP_DIR for snp files in vcf format.
+## SNP_DIR for snp files in vcf format. 
 # vcf files are retrieved from SNP-Seek: http://oryzasnp.org/iric-portal/_variety.zul
 VCF_DIR='https://s3.amazonaws.com/3kricegenome/Nipponbare'
 # SNPs are called using WGvarSNP workflow
 # snp files have this extention: *_env_snp.vcf
 SNP_DIR=/DATA/GROUP/huangcy/Rice_3000_Assembly/VCF
 
-# findbySNP set the number of top ranked cultivars returned by x2-findbySNP,
-# and COMM for the number of cultivars that are shared among top ranked.
-# If more than one cultivars are queried for finding haplovars in x2-findbySNP, COMM is to restrict the reported haplovars.
+# findbySNP set the number of top ranked cultivars returned by x2-findbySNP, 
+# and COMM for the number of cultivars that are shared among top ranked. 
+# If more than one cultivars are queried for finding haplovars in x2-findbySNP, COMM is to restrict the reported haplovars. 
 TOP=30
 COMM=3
 
@@ -97,7 +96,7 @@ NUM_THREADS=4
 
 ## To speed up blat, split samples into smaller parts and run blat in parallel
 # PARTS is the number of parts for sample splitting.
-PARTS=18
+PARTS=2
 
 ## blat in x4-WGblat
 # Add blat directory to the PATH
@@ -105,12 +104,13 @@ PARTS=18
 PERC_IDENTITY=99
 MIN_SCORE=250
 
-## filtering the blat indel results
+## filtering the blat indel results 
 GAP_MINNUM=1 #Minimal number of gaps, more than and including this number. Set to 1 to filter for alignment that has at least one gap.
 GAP_MINSIZE=100 #Minimal gap size in bp, more than and including this number.
 GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
 
-## qsub parameters for x4-WGblat job running on Mason
-WALLTIME=12
+## qsub parameters for x4-WGblat job running on Mason 
+WALLTIME=8
 VMEM=20
 PPN=20
+
