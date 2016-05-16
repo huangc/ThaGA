@@ -71,20 +71,6 @@ done
 sed -e "s/^\([1-9]\)/OsjChr\1/" Oryza_sativa.IRGSP-1.0.26.gff3   | egrep "^##|^OsjChr.*	gene	"         > OsjCHR.gff3
 # sed -e "s/^\([1-9]\)/OsjRmChr\1/" Oryza_sativa.IRGSP-1.0.26.gff3 | egrep "^##|^OsjRmChr.*	gene	" > OsjRMCHR.gff3
 
-# Core SNP set (v.4) README
-# ======================
-# 3kRG core SNP set v.4 is a subset of the 3kRG filtered SNP set v4 obtained using 2-step LD pruning procedure:
-# 1) LD pruning with window size 10kb, window step: 1 snp, R2 threshold: 0.8, followed by
-# 2) LD pruning with window size 500 snps, window step 1 snp, R2 threshold 0.8
-# Total SNPs: 996,009
-# samples : 3023
-# http://oryzasnp-atcg-irri-org.s3-website-ap-southeast-1.amazonaws.com/
-# 990K CoreSNP dataset, called vs Nipponbare MSU7/IRGSP1.0 genome, PLINK ped file
-wget https://s3.amazonaws.com/3kricegenome/reduced/NB-core_v4.ped.gz
-# 990K CoreSNP dataset, called vs Nipponbare MSU7/IRGSP1.0 genome, PLINK map file
-wget https://s3.amazonaws.com/3kricegenome/reduced/NB-core_v4.map.gz
-gunzip -f *.gz
-
 #9. Verify the files have been downloaded and processed correctly.
 #
 # shasum -c checksums.sha
