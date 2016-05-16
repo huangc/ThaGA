@@ -117,3 +117,31 @@ WALLTIME=8
 VMEM=20
 PPN=20
 
+## Parameters for finding DFP [1] of samples in order to evaluate the proportion of shared deletion sites [2] among them.
+# [1] Deletion Fingerprints (DFP): Set of deletions of the assembled contigs when compared to the reference genome. 
+#     To reduce the noise, we define DFP as the deletions that are located in the genic region (iloci).
+# [2] Shared deletion site: the deletion site has EXACT start and end position in the reference for the compared samples.
+#----------------------------
+#
+# Redefine the minimal size of deletion gap for the purpose of InDel fingerprinting
+# which uses a longer gap size for robust comparison
+# GAP_MINSIZE_FP=1
+# GAP_MAXSIZE_FP=5000
+#
+# Setup for comparison
+# QUERY=NIPPONBARE
+# QUERYNAME=CX140
+#
+# Setup for iLocus
+# LOCUSPOCUS_DIR=/N/dc2/projects/brendelgroup/TRegGA/src/AEGEAN/AEGeAn/bin
+LOCUSPOCUS_DIR=/home/huangcy/src/AEGEAN/AEGeAn/bin
+# XTRACTORE_DIR=/N/dc2/projects/brendelgroup/TRegGA/src/AEGEAN/AEGeAn/bin
+XTRACTORE_DIR=/home/huangcy/src/AEGEAN/AEGeAn/bin
+ILOCUSSEQ=OsjLOCUS.fa
+ILOCUSGFF=OsjLOCUS.gff3
+ILOCUSNAME=OsjLOCUS
+DELTA=1000
+ILOCUSSEQ_PTALEN=OsjpTALEN.fa
+DB_ILOCUS=OsjLOCUS
+
+
