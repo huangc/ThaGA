@@ -21,6 +21,9 @@ REFSEQ=OsjChr6.fa
 REFSEQNAME=OsjChr6
 # REFGFF is the gene annotation gff3 file for REFSEQ, retrieved by bin/xgetseq, and located in prereq/.
 REFGFF=OsjCHR.gff3
+# MSUGFF is the gene annotation gff3 file similar to REFSEQ, but retrieved from MSU site. 
+# The file format of MSUREF, but not the content, is different from REFSEQ, and is used by the ilocus finding program, locuspocus.
+MSUGFF=OsjCHR_msu.gff3
 
 ## SAMPLE is a list of sample names. Each sample name should be only one word.
 # SAMPLE="GINMASARI KOTOBUKIMOCHI NIPPONBARE SACHIKAZE BINIAPAN KOTOOURA PATIEROUGE MANYALOJOPOIHUN A2_257 ARC11571 JC_157 KEYANUNIA MADHUWAKARIA CR441 OSATIVA CHINGCHUNG NIAOYAO CHINGLIU"
