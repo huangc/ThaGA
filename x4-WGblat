@@ -24,6 +24,7 @@ module add blat
 #5. Make indel summary table that combines same indels from all samples in each row based on the indel features
 #6. Use the indel summary table to retrieve indel sequences.
 
+
 cd $PBS_O_WORKDIR
 source ./0SOURCE
 # include the TRegGA.source
@@ -38,7 +39,7 @@ SAMPLE=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
 #-----
 #0. Prepare the Blat reference sequence according to TRegGA parameters REFERENCE, FROM, TO.
 cd ${prereq_DIR}
-python ${bin_DIR}/getTarget.py ${REFSEQ} ${REFERENCE}_${FROM}_${TO} ${FROM} ${TO}
+# python ${bin_DIR}/getTarget.py ${REFSEQ} ${REFERENCE}_${FROM}_${TO} ${FROM} ${TO}
 sed -i "s/^>${REFSEQNAME}/>${REFSEQNAME}_${FROM}_${TO}/" ${REFERENCE}_${FROM}_${TO}.fasta
 
 #-----
@@ -108,7 +109,7 @@ pslReps -singleHit blat.${DB_REFSEQ}.${QUERYNAME}.psl blat.${DB_REFSEQ}.${QUERYN
 blat.${DB_REFSEQ}.${QUERYNAME}.Reps.psr
 
 " > WGblat_${i}-on-${REFERENCE}_${FROM}_${TO}.sh
-sh WGblat_${i}-on-${REFERENCE}_${FROM}_${TO}.sh 2>err_WGblat_${i}
+sh WGblat_${i}-on-${REFERENCE}_${FROM}_${TO}.sh 2>err_WGblat_${i} &
 
 done
 
