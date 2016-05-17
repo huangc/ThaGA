@@ -60,7 +60,7 @@ Q_size Q_start Q_end T_size T_start T_end block_count blockSizes qStarts tStarts
  cat - blat.${DB_REFSEQ}.${QUERYNAME}.psl.gaps > blat.${DB_REFSEQ}.${QUERYNAME}.psl.Gaps
 
 # now generate psl.perGap records from each psl.gap record
-\rm blat.${DB_REFSEQ}.${QUERYNAME}.psl.perGap
+\rm -f blat.${DB_REFSEQ}.${QUERYNAME}.psl.perGap
 len=\`awk 'END { print NR }' blat.${DB_REFSEQ}.${QUERYNAME}.psl.gaps\`
 for ((k=1; k<=\$len; k++))
 do
@@ -85,7 +85,7 @@ cut -d \" \" -f15 rec > rec.qStarts
 cut -d \" \" -f16 rec > rec.tStarts
 
 blockCount=\`cat rec.blockCount\`
-\rm rec.perGap
+\rm -f rec.perGap
 for ((m=1; m<\$blockCount; m++))
 do
 blockSize=\`cut -d\",\" -f \$m rec.blockSizes\`
@@ -239,14 +239,14 @@ grep '' /dev/null *.sample > iloci.table
 # convert . and : into tab
 if [ ${indel} == "t_onQ" ]; then
     sed 's/\./\t/g' iloci.table | sed 's/\:/\t/g' | \
-	awk '{ FS="\t"; print $1,$2,$3,$4,$5,$6,$8 }' | sort -k1 > tmp && \mv tmp iloci.table
+	awk -v from="${FROM}" '{ FS="\t"; print $1,$2 + from,$3,$4,$5,$6,$8 }' | sort -k1 > tmp && \mv tmp iloci.table
     echo "Tname tGapStart tGapSize Qname qGapStart qGapSize Samples" | \
 	cat - iloci.table > Seq.${indel}_Lg${GAP_MINSIZE}.table
 
 elif [ ${indel} == "t_sum" ]; then
     sed 's/\./\t/g' iloci.table | sed 's/\:/\t/g' | \
-	awk '{ FS="\t"; print $1,$2,$3,$5 }' | sort -k1 > tmp && \mv tmp iloci.table
-    echo "Tname tGapStart tGapSize Samples" | \
+	awk -v from="${FROM}" '{ FS="\t"; print $1,$2 + from,$3,$5 }' | sort -k1 > tmp && \mv tmp iloci.table
+    echo "Tname tGapStartRef tGapSize Samples" | \
 	cat - iloci.table > Seq.${indel}_Lg${GAP_MINSIZE}.table
 else
     echo "Error does happen" >> err_indel
