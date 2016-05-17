@@ -18,6 +18,12 @@ import re
 infile = sys.argv[1]
 outfile = sys.argv[2]
 
+# Note that matplotlib.use('Agg') is to run matplotlib using a non-GUI backend, so it will generate figure as a png file
+# but will show the figure interactively. Remove this line if GUI is needed.
+# Important: Put these lines at the VERY start of the py file, or one would get error.
+# import matplotlib
+# matplotlib.use('Agg') 
+
 # Import data Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix as a panda dataframe object
 # use the first row as header, first column as index
 df = pd.read_table(infile, sep=' ', header=0, index_col=0) 
