@@ -65,6 +65,18 @@ sh TRegGA-Xa7.run
 sh runTRegGA_IRBB7-on-OsjXa7 &
 sh runTRegGA_DV86-on-OsjXa7 &
 sh runTRegGA_IRBB62-on-OsjXa7 &
+
+# Modify TORQUE specific commands for mason, if needed
+\cp PREREQ.sh PREREQ-mason.sh
+grep -v "#PBS" PREREQ.sh | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && mv tmp PREREQ.sh
+sed -i 's/qsub/sh/g;' PREREQ.sh
+\cp x4-WGblat x4-WGblat-mason
+grep -v "#PBS" x4-WGblat | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && mv tmp x4-WGblat
+\cp x5-WGindelT x5-WGindelT-mason
+grep -v "#PBS" x5-WGindelT | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp x5-WGindelT
+\cp x6-DFPtree x6-DFPtree-mason
+grep -v "#PBS" x6-DFPtree | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp x6-DFPtree
+
 ```
 
 * 2. Setup haplovars for TRegGA improvement
@@ -140,6 +152,8 @@ sh TRegGA-Xa7.run
 	   
 * 6. Finding Deletion Fingerprints (DFPs) of $SAMPLE in sample.foundbySNP with x4-WGblat and x5-WGindelT.
 ```bash
+
+
 # Assign $VARNAME (the third column) in sample.foundbySNP as the sample names
 cd ${WORK_DIR}
 sh ${WORK_DIR}/x4-WGblat &&\
