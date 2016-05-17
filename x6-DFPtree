@@ -26,13 +26,22 @@ module add python
 
 cd $PBS_O_WORKDIR
 source ./0SOURCE
+# include the TRegGA.source
+TRegGA_DIR=`dirname $PWD`
+source ${TRegGA_DIR}/TRegGA.source
+
 cd ${run_DIR}
+mkdir -p iloci
+cd iloci
+\cp ${WORK_DIR}/sample.foundbySNP .
+CULTIVAR=`cut -d"|" -f1 sample.foundbySNP | awk 1 ORS=" "`
+SYNONYM=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
+SAMPLE=`cut -d"|" -f3 sample.foundbySNP | awk 1 ORS=" "`
+
 
 #-----
 #1. Generate iLOCUS for the genic regions plus ${DELTA} kb up- and downstram regions of the reference genome.
 #   Note that MSUGFF instead of REFGFF is used here for the compatibility issue with program locuspocus.
-mkdir -p iloci
-cd iloci
 ln -s ${prereq_DIR}/${MSUGFF} .
 ${LOCUSPOCUS_DIR}/locuspocus --delta ${DELTA} --cds --verbose --genemap ${ILOCUSNAME}.genemap --retainids --skipiiloci --outfile ${ILOCUSGFF} ${MSUGFF}
 ${XTRACTORE_DIR}/xtractore --type=locus ${ILOCUSGFF} ${prereq_DIR}/${REFSEQ} > ${ILOCUSSEQ}
@@ -59,7 +68,7 @@ awk '{ print $1,$4,$5,$9 }' iLOCI.gff3 | sed 's/;/ /g' | awk '{ print $1,$2,$3,$
 # OsjChr10 10808634 306 YB4;
 # OsjChr10 10844270 366 YB2;YB6;YB7;YB8;
 
-\cp ${run_DIR}/t_sum/Seq.t_sum_Lg${GAP_MINSIZE}.table .
+\cp ${run_DIR}/DFPs/t_sum/Seq.t_sum_Lg${GAP_MINSIZE}.table .
 awk -v gap_minsize="${GAP_MINSIZE_FP}" -v gap_maxsize="${GAP_MAXSIZE_FP}" '{ OFS="\t"; if ( $3 >= gap_minsize && $3 <= gap_maxsize ) print $0 }' \
  Seq.t_sum_Lg${GAP_MINSIZE}.table > tmp && \mv tmp Seq.t_sum_Lg${GAP_MINSIZE_FP}.table
 
@@ -81,8 +90,11 @@ awk -v gap_minsize="${GAP_MINSIZE_FP}" -v gap_maxsize="${GAP_MAXSIZE_FP}" '{ OFS
 # Latly, we care only DFPs that are shared by at least two samples for computing the distance matrix. 
 # So we remove deletions that have only one sample.
 
-\rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
-\rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI
+# Note Seq.t_sum_Lg${GAP_MINSIZE_FP}.table has the Tname in different format as in iLOCI.table
+sed -i "s/^${REFSEQNAME}_${FROM}_${TO}/${REFSEQNAME}/g" Seq.t_sum_Lg${GAP_MINSIZE_FP}.table
+
+\rm -f Seq.t_sum_Lg${GAP_MINSIZE_FP}.iloci
+\rm -f Seq.t_sum_Lg${GAP_MINSIZE_FP}.ILOCI
 row=`awk 'END { print NR }' Seq.t_sum_Lg${GAP_MINSIZE_FP}.table`
 for ((m=1; m<=$row; m++))
 do
@@ -97,8 +109,8 @@ cat delrec iLOCI.table | grep -w "${Tname}" | sort -k2 -n |\
  grep -B1 -A1 ${Samples} > delrec.${Tname}.${tGapStart}
 
 grep -v "${Samples}" delrec.${Tname}.${tGapStart} > delrec.${Tname}.${tGapStart}.iloci
-\rm beforeLocus
-\rm afterLocus
+\rm -f beforeLocus
+\rm -f afterLocus
 len=`awk 'END { print NR }' delrec.${Tname}.${tGapStart}.iloci`
 for ((p=1; p<=$len; p++))
 do
@@ -149,15 +161,18 @@ awk -F\; '{ if (NF>2) {print $0} }' Seq.t_sum_Lg${GAP_MINSIZE_FP}_orig.giloci > 
 echo "Tname tGapStart tGapSize tGapEnd Samples iloci" |\
  cat - Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci > Seq.t_sum_Lg${GAP_MINSIZE_FP}.gILOCI
 
-#5. Input is file Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci with the content such as:
+##----------------
+#5. Distance Matrix: Input is file Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci with the content such as:
 # Tname tGapStart tGapSize tGapEnd Samples iloci
 # OsjChr1 10008136 275 10008411 CHINGLIU;KEYANUNIA;ARC11571;CHINGCHUNG;CR441;JC_157;MADHUWAKARIA;NIAOYAO;OSATIVA; locus1510
 # Transform the above table into a matrix sush as:
 # Tname tGapStart tGapSize tGapEnd A2_257;BINIAPAN;CHINGLIU;GINMASARI;KEYANUNIA;KOTOOURA;MANYALOJOPOIHUN;NIPPONBARE;PATIEROUGE;ARC11571;CHINGCHUNG;
 # OsjChr1 10008136 275 10008411 0;0;1;0;1;0;0;0;0;1;1;
 
-cd ${run_DIR}/iloci
-\rm Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix
+mkdir -p ${run_DIR}/DFPtree
+cd ${run_DIR}/DFPtree
+\cp ${run_DIR}/iloci/Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci .
+\rm -f Seq.t_sum_Lg${GAP_MINSIZE_FP}.matrix
 len=`awk 'END { print NR }' Seq.t_sum_Lg${GAP_MINSIZE_FP}.giloci`
 for ((k=1; k<=$len; k++))
 do
@@ -169,7 +184,7 @@ tGapEnd=`cut -d " " -f4 rec`
 Samples=`cut -d " " -f5 rec | tr ";" " "`
 iloci=`cut -d " " -f6 rec`
 
-\rm rec.SAMPLE
+\rm -f rec.SAMPLE
 for i in ${SAMPLE}
 do
 if [[ $Samples =~ $i  ]]; then
@@ -193,7 +208,7 @@ echo "Tname_tGapStart_tGapSize_tGapEnd $recSAMPLEname" | cat - Seq.t_sum_Lg${GAP
 #6. Python script to take the Seq.t_sum_Lg${GAP_MINSIZE_FP}.Matrix and compute a symmetrical nonnegative N-by-N distance matrix DM,
 # where DM[i,j] is the hamming distance between samples feature vectors i and j.
 # Usage: DFPtree.py infile outfile
-cd ${run_DIR}/iloci
+cd ${run_DIR}/DFPtree
 python ${bin_DIR}/DFPtree.py Seq.t_sum_Lg${GAP_MINSIZE_FP}.Matrix Seq.t_sum_Lg${GAP_MINSIZE_FP}.dmx
 
 
@@ -201,5 +216,6 @@ python ${bin_DIR}/DFPtree.py Seq.t_sum_Lg${GAP_MINSIZE_FP}.Matrix Seq.t_sum_Lg${
 ## Report
 cd ${data_DIR}
 \cp -r ${run_DIR}/iloci/Seq.t_sum* .
+\cp -r ${run_DIR}/DFPtree/Seq.t_sum* .
 rename Seq.t ${SAMPLENAME}_SeqDel Seq.t*
 
