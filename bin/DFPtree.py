@@ -19,8 +19,8 @@ infile = sys.argv[1]
 outfile = sys.argv[2]
 
 # Note that matplotlib.use('Agg') is to run matplotlib using a non-GUI backend, so it will generate figure as a png file
-# but will show the figure interactively. Remove this line if GUI is needed.
-# Important: Put these lines at the VERY start of the py file, or one would get error.
+# but will not show the figure interactively. Remove this line if GUI is needed.
+# Important: Put these two lines at the VERY start of the py file, or one would get error.
 # import matplotlib
 # matplotlib.use('Agg') 
 
