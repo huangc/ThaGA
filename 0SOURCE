@@ -109,8 +109,8 @@ MIN_SCORE=250
 
 ## filtering the blat indel results 
 GAP_MINNUM=1 #Minimal number of gaps, more than and including this number. Set to 1 to filter for alignment that has at least one gap.
-GAP_MINSIZE=100 #Minimal gap size in bp, more than and including this number.
-GAP_MAXSIZE=1000000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
+GAP_MINSIZE=1 #Minimal gap size in bp, more than and including this number.
+GAP_MAXSIZE=5000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
 
 ## qsub parameters for x4-WGblat job running on Mason 
 WALLTIME=8
@@ -125,8 +125,8 @@ PPN=20
 #
 # Redefine the minimal size of deletion gap for the purpose of InDel fingerprinting
 # which uses a longer gap size for robust comparison
-# GAP_MINSIZE_FP=1
-# GAP_MAXSIZE_FP=5000
+GAP_MINSIZE_FP=1
+GAP_MAXSIZE_FP=5000
 #
 # Setup for comparison
 # QUERY=NIPPONBARE
@@ -143,5 +143,4 @@ ILOCUSNAME=OsjLOCUS
 DELTA=1000
 ILOCUSSEQ_PTALEN=OsjpTALEN.fa
 DB_ILOCUS=OsjLOCUS
-
 
