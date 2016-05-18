@@ -186,6 +186,7 @@ sh ${WORK_DIR}/x5-WGindelT &&\
 ```bash
 sh ${WORK_DIR}/x6-DFPtree
 ```
+#### dmx
         |NATEL_BORO      |BORO_275        |NCS271_A        |IRBB62  |LAKHSMI_DIGHA   |AUS_295 |AUS_242 |ARC_11276       |DA_GANG_ZHAN    |DV86    |BEGUNBICHI_33   |AUS_308 |IRBB7   |ARC_12920
 --------|----------------|----------------|----------------|--------|----------------|--------|--------|----------------|------------------------|--------|----------------|--------|--------|---------
 NATEL_BORO      0.00    0.33    0.44    0.44    0.44    0.56    0.56    0.56    0.56    0.56    0.56    0.67    0.67    0.67
@@ -249,7 +250,7 @@ grep -v "#PBS" runTRegGA_${SYNONYM}-on-${TARGET} | grep -v "module" | grep -v "P
 \cp runTRegGA_${SYNONYM}-on-${TARGET} ${TRegGA_DIR}
 cd ${TRegGA_DIR}
 sh runTRegGA_${SYNONYM}-on-${TARGET}
-
+```
 
 
 * 10. Report back to haplovars
