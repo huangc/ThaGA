@@ -68,10 +68,10 @@ sh runTRegGA_IRBB62-on-OsjXa7 &
 
 # Modify TORQUE specific commands for mason, if needed
 \cp PREREQ.sh PREREQ-mason.sh
-grep -v "#PBS" PREREQ.sh | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && mv tmp PREREQ.sh
+grep -v "#PBS" PREREQ.sh | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp PREREQ.sh
 sed -i 's/qsub/sh/g;' PREREQ.sh
 \cp x4-WGblat x4-WGblat-mason
-grep -v "#PBS" x4-WGblat | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && mv tmp x4-WGblat
+grep -v "#PBS" x4-WGblat | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp x4-WGblat
 \cp x5-WGindelT x5-WGindelT-mason
 grep -v "#PBS" x5-WGindelT | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp x5-WGindelT
 \cp x6-DFPtree x6-DFPtree-mason
@@ -129,6 +129,22 @@ done
 cd ${WORK_DIR}
 sh x2-findbySNP
 ```
+# sample.foundbySNP
+# CX134|CX134|IRBB7|Indica
+# CX369|CX369|IRBB62|Indica
+# IRIS_313-10177|IRIS 313-10177|DA_GANG_ZHAN|Indica
+# IRIS_313-10605|IRIS 313-10605|DV86|Aus/boro
+# IRIS_313-10861|IRIS 313-10861|ARC_11276|Aus/boro
+# IRIS_313-10892|IRIS 313-10892|ARC_12920|Aus/boro
+# IRIS_313-10976|IRIS 313-10976|LAKHSMI_DIGHA|Aus/boro
+# IRIS_313-11051|IRIS 313-11051|AUS_242|Aus/boro
+# IRIS_313-11054|IRIS 313-11054|AUS_295|Aus/boro
+# IRIS_313-11057|IRIS 313-11057|AUS_308|Aus/boro
+# IRIS_313-11062|IRIS 313-11062|BEGUNBICHI_33|Basmati/sadri
+# IRIS_313-11064|IRIS 313-11064|BORO_275|Aus/boro
+# IRIS_313-11163|IRIS 313-11163|NATEL_BORO|Aus/boro
+# IRIS_313-11636|IRIS 313-11636|NCS271_A|Indica
+
 
 * 5. Denovo assemble contigs of $SAMPLE in sample.foundbySNP for haplovars identification with x3-TRegGA-denovo
 ```bash
@@ -142,9 +158,15 @@ sed -i 's/QTO-t =     NUMPROC#/QTO-t =     0#/;' ${TRegGA_DIR}/assembly/denovo/M
 sed -i 's/GFO-i     =       3#/GFO-i     =       0#/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
 
 # Replace TRegGA.sample with sample.foundbySNP, then run x3-TRegGA-denovo with modified Makefile_denovo-orig
-cd ${TRegGA_DIR}
+cd ${WORK_DIR}
 \cp ${run_DIR}/findbySNP/sample.foundbySNP TRegGA.sample
-sh TRegGA-Xa7.run
+sh x3-TRegGA-denovo
+\cp runTRegGA_${SYNONYM}-denovo ${TRegGA_DIR}
+cd ${TRegGA_DIR}
+SYNONYM=`cut -d"|" -f3 ${WORK_DIR}/sample.foundbySNP | awk 1 ORS=" "`
+for i in $SYNONYM
+do sh runTRegGA_${SYNONYM}-denovo
+done
 
 # Revert the modified Makefile_denovo-orig back to original
 \mv ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig-orig ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
@@ -152,8 +174,6 @@ sh TRegGA-Xa7.run
 	   
 * 6. Finding Deletion Fingerprints (DFPs) of $SAMPLE in sample.foundbySNP with x4-WGblat and x5-WGindelT.
 ```bash
-
-
 # Assign $VARNAME (the third column) in sample.foundbySNP as the sample names
 cd ${WORK_DIR}
 sh ${WORK_DIR}/x4-WGblat &&\
@@ -164,8 +184,69 @@ sh ${WORK_DIR}/x5-WGindelT &&\
 ```bash
 sh ${WORK_DIR}/x6-DFPtree
 ```
+#         NATEL_BORO      BORO_275        NCS271_A        IRBB62  LAKHSMI_DIGHA   AUS_295 AUS_242 ARC_11276       DA_GANG_ZHAN    DV86    BEGUNBICHI_33   AUS_308 IRBB7   ARC_12920
+# NATEL_BORO      0.00    0.33    0.44    0.44    0.44    0.56    0.56    0.56    0.56    0.56    0.56    0.67    0.67    0.67
+# BORO_275        0.33    0.00    0.11    0.11    0.11    0.22    0.22    0.22    0.22    0.22    0.22    0.33    0.33    0.33
+# NCS271_A        0.44    0.11    0.00    0.22    0.22    0.33    0.33    0.33    0.33    0.33    0.33    0.44    0.44    0.44
+# IRBB62  0.44    0.11    0.22    0.00    0.00    0.11    0.11    0.11    0.11    0.11    0.33    0.22    0.22    0.22
+# LAKHSMI_DIGHA   0.44    0.11    0.22    0.00    0.00    0.11    0.11    0.11    0.11    0.11    0.33    0.22    0.22    0.22
+# AUS_295 0.56    0.22    0.33    0.11    0.11    0.00    0.00    0.00    0.00    0.00    0.22    0.11    0.11    0.11
+# AUS_242 0.56    0.22    0.33    0.11    0.11    0.00    0.00    0.00    0.00    0.00    0.22    0.11    0.11    0.11
+# ARC_11276       0.56    0.22    0.33    0.11    0.11    0.00    0.00    0.00    0.00    0.00    0.22    0.11    0.11    0.11
+# DA_GANG_ZHAN    0.56    0.22    0.33    0.11    0.11    0.00    0.00    0.00    0.00    0.00    0.22    0.11    0.11    0.11
+# DV86    0.56    0.22    0.33    0.11    0.11    0.00    0.00    0.00    0.00    0.00    0.22    0.11    0.11    0.11
+# BEGUNBICHI_33   0.56    0.22    0.33    0.33    0.33    0.22    0.22    0.22    0.22    0.22    0.00    0.11    0.11    0.11
+# AUS_308 0.67    0.33    0.44    0.22    0.22    0.11    0.11    0.11    0.11    0.11    0.11    0.00    0.00    0.00
+# IRBB7   0.67    0.33    0.44    0.22    0.22    0.11    0.11    0.11    0.11    0.11    0.11    0.00    0.00    0.00
+# ARC_12920       0.67    0.33    0.44    0.22    0.22    0.11    0.11    0.11    0.11    0.11    0.11    0.00    0.00    0.00
 
-* 8. Construct of supercontigs of $SAMPLE in sample.foundbySNP with x7-TRegGA-rfguided
+
+* 8. Construct of supercontigs of $SAMPLE in sample.foundbyDFP with x7-TRegGA-rfguided
+```bash
+# Combine IRBB7, AUS_308, ARC_12920 to assemble supercontigs
+cd ${WORK_DIR}
+\rm -f sample.foundbyDFP
+SAMPLE_foundbyDFP="IRBB7 AUS_308 ARC_12920"
+for i in $SAMPLE_foundbyDFP
+do grep "$i" sample.foundbySNP >> sample.foundbyDFP
+done
+
+# sample.foundbyDFP
+# CX134|CX134|IRBB7|Indica
+# IRIS_313-11057|IRIS 313-11057|AUS_308|Aus/boro
+# IRIS_313-10892|IRIS 313-10892|ARC_12920|Aus/boro
+
+# Replace TRegGA.sample with sample.foundbyDFP, abd create virtual reads for supercontig process
+\cp sample.foundbyDFP TRegGA.sample
+SYNONYM=`cut -d"|" -f3 ${WORK_DIR}/TRegGA.sample | awk 1 ORS=" "`
+cd ${TRegGA_DIR}/reads
+mkdir -p ${SAMPLENAME}
+cd ${SAMPLENAME}
+\rm -r ${SAMPLENAME}*.fq
+for i in ${SYNONYM}
+do
+ln -s ${TRegGA_DIR}/reads/${i}/${i}_1.fq
+ln -s ${TRegGA_DIR}/reads/${i}/${i}_2.fq
+cat ${i}_1.fq >> ${SAMPLENAME}_1.fq
+cat ${i}_2.fq >> ${SAMPLENAME}_2.fq
+done
+
+# run TRegGA with modified Makefile_denovo-orig to run using rice_japonica as REFERENCE
+\cp ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig-orig
+sed -i 's/REFERENCE            = rice_indica/#REFERENCE            = rice_indica/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
+sed -i 's/#REFERENCE            = rice_japonica/REFERENCE            = rice_japonica/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
+
+# Run x7-TRegGA-rfguided
+CULTIVAR="${SAMPLENAME}"
+SYNONYM="${SAMPLENAME}"
+sh x7-TRegGA-rfguided
+# Modify TORQUE specific commands for mason, if needed
+grep -v "#PBS" runTRegGA_${SYNONYM}-on-${TARGET} | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp runTRegGA_${SYNONYM}-on-${TARGET}
+
+\cp runTRegGA_${SYNONYM}-on-${TARGET} ${TRegGA_DIR}
+cd ${TRegGA_DIR}
+sh runTRegGA_${SYNONYM}-on-${TARGET}
+
 
 
 * 10. Report back to haplovars
