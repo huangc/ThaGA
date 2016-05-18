@@ -1,18 +1,20 @@
 #!/bin/sh
-TRegGA_DIR=$(pwd)
+source 0SOURCE
 source ${TRegGA_DIR}/TRegGA.source
-EMAIL="youremail@indiana.edu"
-WALLTIME=24
-VMEM=500
-PPN=30
+EMAIL="huangcy@indiana.edu"
 CHECKONLY=no
-NUMPROC=30
+
+# WALLTIME=24
+# VMEM=500
+# PPN=2
+# NUMPROC=2
 # CULTIVAR='\"Zhengshan97\"'
 # SYNONYM="ZHENGSHAN97"
-TARGET=OsjSWEET13
-REFERENCE=OsjCHR12
-FROM=17292001
-TO=17315000
+# TARGET=OsjXa7
+# REFERENCE=OsjCHR6
+# FROM=27965001
+# TO=28023000
+
 
 ##-----------------------------------------
 ## No need to change below
@@ -23,7 +25,7 @@ for ((k=1; k<=$len; k++))
 do
 head -$k TRegGA.sample | tail -1 > rec
 CULTIVAR=`cut -d "|" -f1 rec`
-SYNONYM=`cut -d "|" -f2 rec`
+SYNONYM=`cut -d "|" -f3 rec`
 
 echo "
 #!/bin/bash
@@ -76,6 +78,6 @@ make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SY
 # find . -path "*GF/alignoutput" -type d | xargs -I {} \rm -r {}
 # find . -path "*GF/reads" -type d | xargs -I {} \rm -r {}
 
-" >> runTRegGA_${SYNONYM}-on-${TARGET}
+" >> runTRegGA_${SYNONYM}-denovo
 done
 
