@@ -36,8 +36,6 @@ SAMPLENAME=XA7
 SAMPLENUM=1
 
 ## TRegGA parameters
-CHECKONLY=no
-NUMPROC=2
 # CULTIVAR='\"Zhengshan97\"'
 # SYNONYM="ZHENGSHAN97"
 # TARGET=OsjSWEET13
@@ -113,6 +111,8 @@ GAP_MINSIZE=1 #Minimal gap size in bp, more than and including this number.
 GAP_MAXSIZE=5000 #Maximal gap size in bp, less than and including this number. Set to 1000000 as if no limit.
 
 ## qsub parameters for x4-WGblat job running on Mason 
+CHECKONLY=no
+NUMPROC=4
 WALLTIME=8
 VMEM=20
 PPN=20
