@@ -129,8 +129,10 @@ done
 cd ${WORK_DIR}
 sh x2-findbySNP
 ```
-# sample.foundbySNP
-# CX134|CX134|IRBB7|Indica
+#### sample.foundbySNP
+VARID|VARNAME|SYNONYM|VARGROUP
+-----|-------|-------|--------
+CX134|CX134|IRBB7|Indica
 # CX369|CX369|IRBB62|Indica
 # IRIS_313-10177|IRIS 313-10177|DA_GANG_ZHAN|Indica
 # IRIS_313-10605|IRIS 313-10605|DV86|Aus/boro
