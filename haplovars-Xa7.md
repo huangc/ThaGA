@@ -213,13 +213,33 @@ SAMPLE_foundbyDFP="IRBB7 AUS_308 ARC_12920"
 for i in $SAMPLE_foundbyDFP
 do grep "$i" sample.foundbySNP >> sample.foundbyDFP
 done
+\mv sample.foundbyDFP sample.foundbyDFP_IRBB7
 
-# sample.foundbyDFP
+# sample.foundbyDFP_IRBB7
 # CX134|CX134|IRBB7|Indica
 # IRIS_313-11057|IRIS 313-11057|AUS_308|Aus/boro
 # IRIS_313-10892|IRIS 313-10892|ARC_12920|Aus/boro
 
+# Combine DV86, DA_GANG_ZHAN, ARC_11276, AUS_242, AUS_295 to assemble supercontigs
+\rm -f sample.foundbyDFP
+SAMPLE_foundbyDFP="DV86 DA_GANG_ZHAN ARC_11276 AUS_242 AUS_295"
+for i in $SAMPLE_foundbyDFP
+do grep "$i" sample.foundbySNP >> sample.foundbyDFP
+done
+\mv sample.foundbyDFP sample.foundbyDFP_DV86
+
+# Combine IRBB62 and LAKHSMI_DIGHA to assemble supercontigs
+\rm -f sample.foundbyDFP
+SAMPLE_foundbyDFP="IRBB62 LAKHSMI_DIGHA"
+for i in $SAMPLE_foundbyDFP
+do grep "$i" sample.foundbySNP >> sample.foundbyDFP
+done
+\mv sample.foundbyDFP sample.foundbyDFP_IRBB62
+
 # Replace TRegGA.sample with sample.foundbyDFP, abd create virtual reads for supercontig process
+SAMPLENAME=XA7  #for sample.foundbyDFP_IRBB7
+SAMPLENAME=XA7A #for sample.foundbyDFP_DV86
+SAMPLENAME=XA7B #for sample.foundbyDFP_IRBB62
 \cp sample.foundbyDFP TRegGA.sample
 SYNONYM=`cut -d"|" -f3 ${WORK_DIR}/TRegGA.sample | awk 1 ORS=" "`
 cd ${TRegGA_DIR}/reads
