@@ -238,6 +238,11 @@ done
 \cp ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig-orig
 sed -i 's/REFERENCE            = rice_indica/#REFERENCE            = rice_indica/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
 sed -i 's/#REFERENCE            = rice_japonica/REFERENCE            = rice_japonica/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
+# edit on Makefile_denovo-orig
+else ifeq ($(REFERENCE), rice_japonica)
+        REF_DIR            =  ${TRegGA_DIR}/reference/${REFERENCE}
+        TARGET_SEQ         =  ${REF_DIR}/OsjCHR.fa
+        TARGET_GFF         =  ${REF_DIR}/OsjCHR.gff3
 
 # Run x7-TRegGA-rfguided
 CULTIVAR="${SAMPLENAME}"
@@ -248,7 +253,9 @@ grep -v "#PBS" runTRegGA_${SYNONYM}-on-${TARGET} | grep -v "module" | grep -v "P
 
 \cp runTRegGA_${SYNONYM}-on-${TARGET} ${TRegGA_DIR}
 cd ${TRegGA_DIR}
+
 sh runTRegGA_${SYNONYM}-on-${TARGET}
+
 ```
 
 
