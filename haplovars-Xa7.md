@@ -252,21 +252,33 @@ ln -s ${TRegGA_DIR}/reads/${i}/${i}_1.fq
 ln -s ${TRegGA_DIR}/reads/${i}/${i}_2.fq
 cat ${i}_1.fq >> ${SAMPLENAME}_1.fq
 cat ${i}_2.fq >> ${SAMPLENAME}_2.fq
+${NGSUTILS}/fastqutils tofasta ${SAMPLENAME}_1.fq > ${SAMPLENAME}_1.fa
+${NGSUTILS}/fastqutils tofasta ${SAMPLENAME}_2.fq > ${SAMPLENAME}_2.fa
 done
 
 # run TRegGA with modified Makefile_denovo-orig to run using rice_japonica as REFERENCE
 \cp ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig-orig
 sed -i 's/REFERENCE            = rice_indica/#REFERENCE            = rice_indica/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
 sed -i 's/#REFERENCE            = rice_japonica/REFERENCE            = rice_japonica/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
+
+# change the maximum number of iterations to 0. Run Gapfiller at the rfguided step instead.
+# GFO-i     =       3#  maximum number of iterations; set to 0 to not run GapFiller
+sed -i 's/GFO-i     =       3#/GFO-i     =       0#/;' ${TRegGA_DIR}/assembly/denovo/Makefile_denovo-orig
+
 # edit on Makefile_denovo-orig
 else ifeq ($(REFERENCE), rice_japonica)
         REF_DIR            =  ${TRegGA_DIR}/reference/${REFERENCE}
         TARGET_SEQ         =  ${REF_DIR}/OsjCHR.fa
         TARGET_GFF         =  ${REF_DIR}/OsjCHR.gff3
 
+# edit on Makefile_RGA-orig to use SCAFFOLD from ${SYNONYM}-soap.scafSeq instead of ${SYNONYM}-GF.gapfilled.final.fa
+#SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa# the gapfilled SOAP scaffolds
+SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-soap.scafSeq# the SOAP scaffolds
+
 # Run x7-TRegGA-rfguided
 CULTIVAR="${SAMPLENAME}"
 SYNONYM="${SAMPLENAME}"
+
 sh x7-TRegGA-rfguided
 # Modify TORQUE specific commands for mason, if needed
 grep -v "#PBS" runTRegGA_${SYNONYM}-on-${TARGET} | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp runTRegGA_${SYNONYM}-on-${TARGET}
@@ -276,14 +288,62 @@ cd ${TRegGA_DIR}
 
 sh runTRegGA_${SYNONYM}-on-${TARGET}
 
+##### problem with RATT (in the err file): due to perl version v5.22.1, as v5.16.2 works (at Mason). 
+cd RATT; \
+/usr/local/src/NGS-DIR/PAGIT/PAGIT/RATT/start.ratt.sh embl KOTOOURA-OsjSWEET13.fa RATT Strain
+Can't use 'defined(@array)' (Maybe you should just omit the defined()?) at /usr/local/src/NGS-DIR/PAGIT/PAGIT/RATT/main.ratt.pl line 244.
+Sorry the reference file wasn't generated corretly.
+
+# Issue was resolved by editting /usr/local/src/NGS-DIR/PAGIT/PAGIT/RATT/main.ratt.pl 
+### More details on the issue by googling on "Define(@array) is Deprecated".
+### VB Note: the following "defined(@array)" no longer works in current Perl versions ... (May 24, 2016)
+#         if (defined(@{$$ref_shift{$refName}})) {
+          if (1) {
 ```
 
+* 9. Run x8-TregGA-rfguided using supercontigs of $SAMPLE in sample.foundbyDFP as reference
+##### Shrink the number of Ns in supercontig so it is easier for the contigs to merge in TRegGA
+##### Re-adjust the sequence annotation with RATT 
+##### Change the number of processor used in bowtie to 2 or 4, but definitely not 8. (cannot find where to control it)
+```bash
+SAMPLENAME="XA7 XA7A XA7B"
+QUERY=IRBB7
+CULTIVAR=${QUERY}
+SYNONYM=${QUERY}
+OLDTARGET=OsjXa7
+TARGET=${SAMPLENAME}-${OLDTARGET}
+# TARGET=OsjXa7
+# REFERENCE=OsjCHR6
+# FROM=27965001
+# TO=28023000
+
+cd ${WORK_DIR}
+# Modify runTRegGA_IRBB7-on-XA7-OsjXa7
+\cp ${TRegGA_DIR}/assembly/rfguided/${SAMPLENAME}-on-${OLDTARGET}/EVALUATION/${SAMPLENAME}-${OLDTARGET}.fa \
+ ${TRegGA_DIR}/targets/${SAMPLENAME}-${OLDTARGET}.fasta
+\cp ${TRegGA_DIR}/assembly/rfguided/${SAMPLENAME}-on-${OLDTARGET}/EVALUATION/${SAMPLENAME}-${OLDTARGET}.embl \
+ ${TRegGA_DIR}/targets
+\cp ${TRegGA_DIR}/assembly/rfguided/${SAMPLENAME}-on-${OLDTARGET}/EVALUATION/${SAMPLENAME}-${OLDTARGET}.gff3 \
+ ${TRegGA_DIR}/targets
+
+sh x8-TRegGA-rfguided
+# Modify TORQUE specific commands for mason, if needed
+grep -v "#PBS" runTRegGA_${SYNONYM}-on-${TARGET} | grep -v "module" | grep -v "PBS_O_WORKDIR" > tmp && \mv tmp runTRegGA_${SYNONYM}-on-${TARGET}
+\cp runTRegGA_${SYNONYM}-on-${TARGET} ${TRegGA_DIR}
+cd ${TRegGA_DIR}
+sh runTRegGA_${SYNONYM}-on-${TARGET}
+	
+
+
+
+
+
+```
 
 * 10. Report back to haplovars
 ```bash
 \cp *.haplovar ${data_DIR)
 ```
-
 
 ## REFERENCE:
 * [2] Xia Chun, Chen H, Zhu X. Identification, Mapping, Isolation of the Genes Resisting to Bacterial Blight and Breeding Application in Rice. Molecular Plant Breeding. 2012;3(12)121-131.
