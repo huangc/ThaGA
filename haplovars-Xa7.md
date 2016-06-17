@@ -271,9 +271,21 @@ else ifeq ($(REFERENCE), rice_japonica)
         TARGET_SEQ         =  ${REF_DIR}/OsjCHR.fa
         TARGET_GFF         =  ${REF_DIR}/OsjCHR.gff3
 
-# edit on Makefile_RGA-orig to use SCAFFOLD from ${SYNONYM}-soap.scafSeq instead of ${SYNONYM}-GF.gapfilled.final.fa
+# Patch on Makefile_RGA-orig to use SCAFFOLD from ${SYNONYM}-soap.scafSeq instead of ${SYNONYM}-GF.gapfilled.final.fa
 #SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa# the gapfilled SOAP scaffolds
 SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-soap.scafSeq# the SOAP scaffolds
+
+sed -r -e 's/"#SCAFFOLDS           = ${DeNOVO_DIR}\/${SYNONYM}-GF"\/"SCAFFOLDS           = ${DeNOVO_DIR}\/${SYNONYM}-GF"\/;' Makefile_RGA-orig > foo
+sed -r -e "s/'#SCAFFOLDS           = ${DeNOVO_DIR}\/${SYNONYM}-GF'\/'SCAFFOLDS           = ${DeNOVO_DIR}\/${SYNONYM}-GF'\/;" Makefile_RGA-orig > foo
+
+sed -r -e "s/'#SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF'/'SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF'/;" Makefile_RGA-orig > foo
+sed -r 's/#SCAFFOLDS           = ${DeNOVO_DIR}/SCAFFOLDSSSSSSS           = ${DeNOVO_DIR}/;' Makefile_RGA-orig > foo
+
+sed -r "s|#SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF|SCAFFOLDSSSSS           = ${DeNOVO_DIR}/${SYNONYM}-GF|g" Makefile_RGA-orig > foo
+sed -r 's|#SCAFFOLDS           = \${DeNOVO_DIR}/\${SYNONYM}-GF|SCAFFOLDSSSSS           = \${DeNOVO_DIR}/\${SYNONYM}-GF|g' Makefile_RGA-orig > foo
+sed -r "s|#SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF|SCAFFOLDSSSSS           = ${DeNOVO_DIR}/${SYNONYM}-GF|g" Makefile_RGA-orig > foo
+sed -r 's|#SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF|SCAFFOLDSSSSS           = \${DeNOVO_DIR}/\${SYNONYM}-GF|g' Makefile_RGA-orig > foo
+sed -r "s|#SCAFFOLDS           = ${DeNOVO_DIR}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa#|#SCAFFOLDSSSSSSSS#|g" Makefile_RGA-orig > foo
 
 # Run x7-TRegGA-rfguided
 CULTIVAR="${SAMPLENAME}"
