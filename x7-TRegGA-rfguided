@@ -4,6 +4,22 @@ source ${TRegGA_DIR}/TRegGA.source
 EMAIL="huangcy@indiana.edu"
 CHECKONLY=no
 
+# SAMPLENAME=XA7
+# SAMPLENAME=XA7A
+SAMPLENAME=XA7B
+
+# QUERY=IRBB7
+# QUERY=DV86
+QUERY=IRBB62
+
+CULTIVAR=${QUERY}
+SYNONYM=${QUERY}
+OLDTARGET=OsjXa7
+TARGET=${SAMPLENAME}-${OLDTARGET}
+REFERENCE=${SAMPLENAME}-${OLDTARGET}
+FROM=
+TO=
+
 # WALLTIME=24
 # VMEM=500
 # PPN=2
@@ -19,13 +35,6 @@ CHECKONLY=no
 ##-----------------------------------------
 ## No need to change below
 ##-----------------------------------------
-
-len=`awk 'END { print NR }' TRegGA.sample`
-for ((k=1; k<=$len; k++))
-do
-head -$k TRegGA.sample | tail -1 > rec
-CULTIVAR=`cut -d "|" -f1 rec`
-SYNONYM=`cut -d "|" -f3 rec`
 
 echo "
 #!/bin/bash
@@ -48,13 +57,13 @@ cd ${TRegGA_DIR}
 # make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/reads/${SYNONYM}/${SYNONYM}_1.fa >& err_${SYNONYM}-reads
 
 # For the read prep and denovo assembly and no more.
-make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/assembly/denovo/${SYNONYM}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa >& err_${SYNONYM}-denovo
+# make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} -f Makefile_TRegGA-orig ${TRegGA_DIR}/assembly/denovo/${SYNONYM}/${SYNONYM}-GF/${SYNONYM}-GF.gapfilled.final.fa >& err_${SYNONYM}-denovo
 
 # For the target prep only
 # make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig ${TRegGA_DIR}/targets/${TARGET}.embl >& err_${SYNONYM}-TargetPrep-${TARGET}
 
 # For the entire workflow
-# make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig >& err_${SYNONYM}-on-${TARGET}
+make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SYNONYM=${SYNONYM} TARGET=${TARGET} REFERENCE=${REFERENCE} FROM=${FROM} TO=${TO} -f Makefile_TRegGA-orig >& err_${SYNONYM}-on-${TARGET}
 
 ##---------------------------
 # Traverse to ${TRegGA_DIR}/assembly/rfguided/${SYNONYM}-on-${TARGET}/EVALUATION for the assembly results.
@@ -78,6 +87,6 @@ make CHECKONLY=${CHECKONLY} NUMPROC=${NUMPROC} CULTIVAR='\\\"${CULTIVAR}\\\"' SY
 # find . -path "*GF/alignoutput" -type d | xargs -I {} \rm -r {}
 # find . -path "*GF/reads" -type d | xargs -I {} \rm -r {}
 
-" >> runTRegGA_${SYNONYM}-denovo
-done
+" >> runTRegGA_${SYNONYM}-on-${TARGET}
+
 
